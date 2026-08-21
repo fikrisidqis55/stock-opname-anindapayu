@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#7c2d12"/>
+  <g stroke="#f5e9d3" stroke-width="14" stroke-linecap="round" opacity="0.55">
+    <path d="M-32 160 L160 -32" fill="none"/>
+    <path d="M-32 288 L288 -32" fill="none"/>
+    <path d="M-32 416 L416 -32" fill="none"/>
+    <path d="M-32 544 L544 -32" fill="none"/>
+    <path d="M96 544 L544 96" fill="none"/>
+    <path d="M224 544 L544 224" fill="none"/>
+    <path d="M352 544 L544 352" fill="none"/>
+  </g>
+  <g fill="#f5e9d3" opacity="0.55">
+    <circle cx="96" cy="96" r="8"/>
+    <circle cx="192" cy="192" r="8"/>
+    <circle cx="320" cy="64" r="8"/>
+    <circle cx="64" cy="320" r="8"/>
+    <circle cx="448" cy="192" r="8"/>
+    <circle cx="192" cy="448" r="8"/>
+    <circle cx="416" cy="416" r="8"/>
+  </g>
+  <circle cx="256" cy="256" r="128" fill="#7c2d12" stroke="#f5e9d3" stroke-width="10"/>
+  <text x="256" y="296" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="112" font-weight="bold" fill="#ffffff">AP</text>
+</svg>

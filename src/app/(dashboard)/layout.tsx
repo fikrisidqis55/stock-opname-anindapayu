@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { AppNav } from '@/components/layout/app-nav';
+import { SwRegister } from '@/components/layout/sw-register';
 import { Toaster } from '@/components/ui/sonner';
 import { auth } from '@/server/auth';
 
@@ -16,6 +17,7 @@ export default async function DashboardLayout({
       <AppNav />
       <main className="w-full flex-1 p-4 pb-20 md:pb-4">{children}</main>
       <Toaster richColors position="top-center" />
+      <SwRegister />
     </div>
   );
 }
