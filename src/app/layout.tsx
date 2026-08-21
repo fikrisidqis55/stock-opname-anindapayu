@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: 'Ananda Payu', template: '%s · Ananda Payu' },
-  description: 'Aplikasi stock opname batik Ananda Payu',
+  title: { default: 'Aninda Payu', template: '%s · Aninda Payu' },
+  description: 'Aplikasi stock opname batik Aninda Payu',
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

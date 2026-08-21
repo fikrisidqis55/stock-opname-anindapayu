@@ -35,7 +35,7 @@ export default function LoginPage() {
         className="w-full max-w-sm space-y-4 rounded-xl border bg-card p-6"
       >
         <div>
-          <h1 className="text-xl font-bold">Ananda Payu</h1>
+          <h1 className="text-xl font-bold">Aninda Payu</h1>
           <p className="text-sm text-muted-foreground">Masuk untuk mengelola stok batik</p>
         </div>
         <input

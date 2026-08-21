@@ -1,8 +1,8 @@
-# Rencana Implementasi: Ananda Payu — Aplikasi Stock Opname Batik
+# Rencana Implementasi: Aninda Payu — Aplikasi Stock Opname Batik
 
 > **Untuk pelaksana:** WAJIB gunakan skill `subagent-driven-development` (disarankan) atau `executing-plans` untuk mengerjakan rencana ini tugas demi tugas. Langkah memakai sintaks checkbox (`- [ ]`) untuk pelacakan.
 
-**Goal:** Membangun PWA stock opname batik "Ananda Payu" — stok masuk (produksi sendiri/kulakan luar), stok keluar (ecer/grosir/kulakan), sesi opname dengan selisih, dan 3 laporan.
+**Goal:** Membangun PWA stock opname batik "Aninda Payu" — stok masuk (produksi sendiri/kulakan luar), stok keluar (ecer/grosir/kulakan), sesi opname dengan selisih, dan 3 laporan.
 
 **Architecture:** Next.js 15 App Router full-stack. UI (RSC + Server Actions) → services (logika bisnis) → repositories (Drizzle ORM) → PostgreSQL (Neon). Ledger `stock_movements` sebagai sumber kebenaran riwayat; `stock_qty` produk adalah denormalisasi yang diperbarui dalam transaksi DB yang sama.
 
@@ -26,7 +26,7 @@
 ## Struktur File
 
 ```
-ananda-payu/
+aninda-payu/
 ├── docs/design/SPEC.md                  # spesifikasi (sudah ada)
 ├── drizzle.config.ts                    # konfigurasi drizzle-kit
 ├── vitest.config.ts
@@ -107,31 +107,31 @@ ananda-payu/
 
 - [ ] **Step 1: Scaffold Next.js di folder sementara**
 
-Folder `ananda-payu` sudah berisi `.git` dan `docs`. Scaffold di folder terpisah lalu salin:
+Folder `aninda-payu` sudah berisi `.git` dan `docs`. Scaffold di folder terpisah lalu salin:
 
 ```powershell
 cd d:\Ufeek\work.work.work
-npx create-next-app@latest ananda-payu-tmp --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --yes
+npx create-next-app@latest aninda-payu-tmp --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --yes
 ```
 
 Bila ditanya Turbopack/React Compiler, terima default (flag `--yes`).
 
-- [ ] **Step 2: Salin hasil scaffold ke `ananda-payu` (kecuali `.git`)**
+- [ ] **Step 2: Salin hasil scaffold ke `aninda-payu` (kecuali `.git`)**
 
 ```powershell
-robocopy ananda-payu-tmp ananda-payu /E /XD .git
+robocopy aninda-payu-tmp aninda-payu /E /XD .git
 ```
 
 Catatan: exit code robocopy 0–7 berarti sukses. Lalu hapus folder sementara (hanya berisi scaffold + git milik sendiri):
 
 ```powershell
-Remove-Item -Recurse -Force .\ananda-payu-tmp
+Remove-Item -Recurse -Force .\aninda-payu-tmp
 ```
 
 - [ ] **Step 3: Instal dependensi tambahan**
 
 ```powershell
-cd ananda-payu
+cd aninda-payu
 npm i drizzle-orm postgres drizzle-kit next-auth@beta @auth/core bcryptjs zod uploadthing @uploadthing/react
 npm i -D vitest tsx @types/bcryptjs @playwright/test
 ```
@@ -172,7 +172,7 @@ AUTH_SECRET=
 # UploadThing — dari dashboard uploadthing.com
 UPLOADTHING_TOKEN=
 # Untuk seed akun owner (hanya dipakai scripts/seed.ts)
-OWNER_EMAIL=owner@anandapayu.example
+OWNER_EMAIL=owner@anindapayu.example
 OWNER_PASSWORD=
 ```
 
@@ -650,7 +650,7 @@ export default function LoginPage() {
     <main className="flex min-h-dvh items-center justify-center p-4">
       <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4 rounded-xl border p-6">
         <div>
-          <h1 className="text-xl font-bold">Ananda Payu</h1>
+          <h1 className="text-xl font-bold">Aninda Payu</h1>
           <p className="text-sm text-muted-foreground">Masuk untuk mengelola stok batik</p>
         </div>
         <input name="email" type="email" required placeholder="Email"
@@ -708,8 +708,8 @@ npx shadcn@latest add button card input label select table badge dialog separato
 
 ```tsx
 export const metadata: Metadata = {
-  title: { default: 'Ananda Payu', template: '%s · Ananda Payu' },
-  description: 'Aplikasi stock opname batik Ananda Payu',
+  title: { default: 'Aninda Payu', template: '%s · Aninda Payu' },
+  description: 'Aplikasi stock opname batik Aninda Payu',
 };
 ```
 
@@ -736,7 +736,7 @@ export function AppNav() {
     <>
       {/* Sidebar desktop */}
       <aside className="hidden w-52 shrink-0 border-r p-4 md:block">
-        <p className="mb-4 text-lg font-bold">Ananda Payu</p>
+        <p className="mb-4 text-lg font-bold">Aninda Payu</p>
         <nav className="space-y-1">
           {MENU.map((m) => (
             <Link key={m.href} href={m.href}
@@ -1632,9 +1632,9 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Ananda Payu',
-    short_name: 'Ananda Payu',
-    description: 'Aplikasi stock opname batik Ananda Payu',
+    name: 'Aninda Payu',
+    short_name: 'Aninda Payu',
+    description: 'Aplikasi stock opname batik Aninda Payu',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
@@ -1651,7 +1651,7 @@ SVG 512×512 bertema batik: latar cokelat soga (`#7c2d12`), motif parang sederha
 - [ ] **Step 5: Service worker `public/sw.js` + registrasi**
 
 ```js
-const CACHE = 'ananda-payu-static-v1';
+const CACHE = 'aninda-payu-static-v1';
 const STATIC = ['/icons/icon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (e) => {

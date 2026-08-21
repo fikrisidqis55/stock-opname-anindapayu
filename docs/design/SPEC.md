@@ -1,15 +1,15 @@
-# Spesifikasi: Ananda Payu — Aplikasi Stock Opname Batik
+# Spesifikasi: Aninda Payu — Aplikasi Stock Opname Batik
 
 - **Status**: Disetujui
 - **Tanggal**: 2026-08-21
 - **Platform**: Web PWA (Next.js, responsif, installable di HP)
-- **Lokasi proyek**: `ananda-payu/`
+- **Lokasi proyek**: `aninda-payu/`
 
 ---
 
 ## 1. Latar Belakang & Tujuan
 
-Ananda Payu adalah toko pakaian batik yang membutuhkan aplikasi untuk:
+Aninda Payu adalah toko pakaian batik yang membutuhkan aplikasi untuk:
 
 1. Mencatat **stok masuk** dari dua sumber: **produksi sendiri** dan **kulakan dari luar**.
 2. Mencatat **stok keluar** dari tiga kanal penjualan: **ecer**, **grosir**, dan **kulakan/bakul** (pembeli yang borong).
@@ -65,7 +65,7 @@ Ananda Payu adalah toko pakaian batik yang membutuhkan aplikasi untuk:
 ### Struktur folder
 
 ```
-ananda-payu/
+aninda-payu/
 ├── docs/design/SPEC.md         # dokumen ini
 ├── src/
 │   ├── app/
@@ -276,7 +276,7 @@ Semua laporan responsif (HP & desktop), filter rentang tanggal (kecuali stok), t
 
 ## 10. PWA & UX
 
-- `manifest.ts` + ikon (192 & 512px), nama "Ananda Payu", installable ke home screen.
+- `manifest.ts` + ikon (192 & 512px), nama "Aninda Payu", installable ke home screen.
 - Service worker hanya cache aset statis/app-shell — **data tetap online**; fondasi offline-first disiapkan lewat isolasi repository layer.
 - Mobile-first: bottom navigation **Stok · Transaksi · Opname · Laporan · Pengaturan**; tombol besar; input numerik cepat; format Rupiah (`Rp 150.000`).
 

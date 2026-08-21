@@ -18,7 +18,7 @@ export function AppNav() {
     <>
       {/* Sidebar desktop */}
       <aside className="hidden w-52 shrink-0 border-r p-4 md:block">
-        <p className="mb-4 text-lg font-bold">Ananda Payu</p>
+        <p className="mb-4 text-lg font-bold">Aninda Payu</p>
         <nav className="space-y-1">
           {MENU.map((m) => (
             <Link
