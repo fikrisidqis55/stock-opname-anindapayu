@@ -1,6 +1,29 @@
 import { and, asc, eq, gte, lte, sql } from 'drizzle-orm';
 import { db } from '@/server/db';
-import { saleItems, sales, stockMovements } from '@/server/db/schema';
+import { products, saleItems, sales, stockMovements } from '@/server/db/schema';
+
+export async function homeSummary() {
+  const [stock] = await db
+    .select({
+      totalQty: sql<number>`coalesce(sum(${products.stockQty}), 0)::int`,
+      totalModal: sql<number>`coalesce(sum(${products.stockQty} * ${products.priceModal}), 0)::int`,
+    })
+    .from(products)
+    .where(eq(products.isActive, true));
+  const [today] = await db
+    .select({
+      total: sql<number>`coalesce(sum(${sales.totalPrice}), 0)::int`,
+    })
+    .from(sales)
+    .where(
+      sql`date_trunc('day', ${sales.createdAt} at time zone 'Asia/Jakarta') = date_trunc('day', now() at time zone 'Asia/Jakarta')`,
+    );
+  return {
+    totalQty: stock?.totalQty ?? 0,
+    totalModal: stock?.totalModal ?? 0,
+    salesToday: today?.total ?? 0,
+  };
+}
 
 export async function stockCard(productId: string, from?: Date, to?: Date) {
   const movements = await db

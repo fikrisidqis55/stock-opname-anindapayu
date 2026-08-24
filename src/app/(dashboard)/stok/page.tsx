@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { DetailList, RowDetailDialog } from '@/components/ui/row-detail';
 import {
   Table,
   TableBody,
@@ -64,16 +65,19 @@ export default async function StokPage({
               <CardTitle className="capitalize">{categoryName}</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
+              <Table className="md:min-w-[760px]">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Foto</TableHead>
+                    <TableHead className="hidden sm:table-cell">Foto</TableHead>
                     <TableHead>Nama</TableHead>
                     <TableHead>Stok</TableHead>
-                    <TableHead>Modal</TableHead>
-                    <TableHead>Ecer</TableHead>
-                    <TableHead>Grosir</TableHead>
-                    <TableHead>Kulakan</TableHead>
+                    <TableHead className="hidden md:table-cell">Modal</TableHead>
+                    <TableHead className="hidden md:table-cell">Ecer</TableHead>
+                    <TableHead className="hidden md:table-cell">Grosir</TableHead>
+                    <TableHead className="hidden md:table-cell">Kulakan</TableHead>
+                    <TableHead className="sticky right-0 border-l border-border bg-card">
+                      <span className="sr-only">Aksi</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -83,7 +87,7 @@ export default async function StokPage({
                       product.stockQty <= product.minStockQty;
                     return (
                       <TableRow key={product.id}>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           {product.photoUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -108,10 +112,68 @@ export default async function StokPage({
                             {product.stockQty}
                           </Badge>
                         </TableCell>
-                        <TableCell>{formatRupiah(product.priceModal)}</TableCell>
-                        <TableCell>{formatRupiah(product.priceEcer)}</TableCell>
-                        <TableCell>{formatRupiah(product.priceGrosir)}</TableCell>
-                        <TableCell>{formatRupiah(product.priceKulakan)}</TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {formatRupiah(product.priceModal)}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {formatRupiah(product.priceEcer)}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {formatRupiah(product.priceGrosir)}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {formatRupiah(product.priceKulakan)}
+                        </TableCell>
+                        <TableCell className="sticky right-0 border-l border-border bg-card group-hover:bg-muted">
+                          <RowDetailDialog
+                            title={product.name}
+                            description={`Kategori: ${categoryName}`}
+                          >
+                            {product.photoUrl && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={product.photoUrl}
+                                alt={product.name}
+                                className="h-24 w-24 rounded-md border border-border object-cover"
+                              />
+                            )}
+                            <DetailList
+                              rows={[
+                                ['Stok berjalan', `${product.stockQty} pcs`],
+                                [
+                                  'Stok minimum',
+                                  product.minStockQty != null
+                                    ? `${product.minStockQty} pcs`
+                                    : '—',
+                                ],
+                                ['Harga modal', formatRupiah(product.priceModal)],
+                                ['Harga ecer', formatRupiah(product.priceEcer)],
+                                ['Harga grosir', formatRupiah(product.priceGrosir)],
+                                ['Harga kulakan', formatRupiah(product.priceKulakan)],
+                              ]}
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                render={
+                                  <Link
+                                    href={`/laporan/kartu-stok?productId=${product.id}`}
+                                  />
+                                }
+                              >
+                                Kartu stok
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                render={<Link href={`/stok/${product.id}/edit`} />}
+                              >
+                                Ubah
+                              </Button>
+                            </div>
+                          </RowDetailDialog>
+                        </TableCell>
                       </TableRow>
                     );
                   })}

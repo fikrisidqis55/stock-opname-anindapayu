@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { ArrowLedgerIcon } from '@/components/ui/icons';
 
 const MENU = [
   { href: '/stok', label: 'Stok' },
@@ -12,50 +13,111 @@ const MENU = [
   { href: '/pengaturan', label: 'Pengaturan' },
 ] as const;
 
+const TOP_LEVEL = ['/', ...MENU.map((m) => m.href)];
+
+function parentOf(pathname: string): string {
+  const hit = MENU.find((m) => pathname.startsWith(m.href));
+  return hit?.href ?? '/';
+}
+
+export function AppTopBar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const deep = !TOP_LEVEL.includes(pathname);
+  return (
+    <header className="sticky top-0 z-40 flex items-center gap-1.5 border-b border-border bg-background px-3 py-2 md:hidden">
+      {deep && (
+        <button
+          type="button"
+          aria-label="Kembali"
+          onClick={() =>
+            window.history.length > 1 ? router.back() : router.push(parentOf(pathname))
+          }
+          className="-ml-1 rounded-md p-1 text-foreground hover:bg-muted"
+        >
+          <ArrowLedgerIcon className="size-5 rotate-180" />
+        </button>
+      )}
+      <Link
+        href="/"
+        aria-label="Ke beranda"
+        className="font-heading text-base font-bold hover:text-primary"
+      >
+        Aninda Payu
+      </Link>
+    </header>
+  );
+}
+
 export function AppNav() {
   const pathname = usePathname();
   return (
     <>
-      {/* Sidebar desktop */}
-      <aside className="hidden w-52 shrink-0 border-r p-4 md:block">
-        <p className="mb-4 text-lg font-bold">Aninda Payu</p>
-        <nav className="space-y-1">
-          {MENU.map((m) => (
-            <Link
-              key={m.href}
-              href={m.href}
-              className={`block rounded-md px-3 py-2 text-sm ${
-                pathname.startsWith(m.href)
-                  ? 'bg-primary text-primary-foreground'
-                  : 'hover:bg-muted'
-              }`}
-            >
-              {m.label}
-            </Link>
-          ))}
+      {/* Sidebar desktop: indeks buku */}
+      <aside className="hidden w-56 shrink-0 border-r border-border p-5 md:block">
+        <Link
+          href="/"
+          aria-label="Ke beranda"
+          className="block font-heading text-xl font-bold hover:text-primary"
+        >
+          Aninda Payu
+        </Link>
+        <div className="rule-double mt-2 mb-5" aria-hidden />
+        <nav className="space-y-0.5">
+          {MENU.map((m) => {
+            const active = pathname.startsWith(m.href);
+            return (
+              <Link
+                key={m.href}
+                href={m.href}
+                aria-current={active ? 'page' : undefined}
+                className={`block px-1 py-2 text-sm ${
+                  active
+                    ? 'font-semibold text-primary'
+                    : 'text-foreground hover:bg-muted'
+                }`}
+              >
+                <span
+                  className={
+                    active
+                      ? 'underline decoration-soga decoration-2 underline-offset-8'
+                      : undefined
+                  }
+                >
+                  {m.label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
         <button
           onClick={() => signOut({ callbackUrl: '/login' })}
-          className="mt-6 w-full rounded-md border px-3 py-2 text-sm"
+          className="mt-6 w-full rounded-md border border-foreground/30 px-3 py-2 text-sm hover:bg-muted"
         >
           Keluar
         </button>
       </aside>
-      {/* Bottom nav mobile */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t bg-background md:hidden">
-        {MENU.map((m) => (
-          <Link
-            key={m.href}
-            href={m.href}
-            className={`flex-1 py-3 text-center text-xs ${
-              pathname.startsWith(m.href)
-                ? 'font-bold text-primary'
-                : 'text-muted-foreground'
-            }`}
-          >
-            {m.label}
-          </Link>
-        ))}
+      {/* Bottom nav mobile: kaki buku dengan garis tinta */}
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t-2 border-indigo-deep bg-background md:hidden">
+        {MENU.map((m) => {
+          const active = pathname.startsWith(m.href);
+          return (
+            <Link
+              key={m.href}
+              href={m.href}
+              aria-current={active ? 'page' : undefined}
+              className={`flex flex-1 flex-col items-center gap-1 py-2 text-[0.7rem] ${
+                active ? 'font-semibold text-primary' : 'text-muted-foreground'
+              }`}
+            >
+              {m.label}
+              <span
+                aria-hidden
+                className={`h-0.5 w-6 ${active ? 'bg-soga' : 'bg-transparent'}`}
+              />
+            </Link>
+          );
+        })}
       </nav>
     </>
   );

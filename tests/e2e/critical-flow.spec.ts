@@ -9,14 +9,17 @@ import {
   stockBatches,
   stockMovements,
 } from '../../src/server/db/schema';
+import { passwordHarian } from '../../src/lib/domain';
+import { rotasiPasswordOwner } from '../../src/server/services/rotasiPassword';
 
 const EMAIL = process.env.OWNER_EMAIL!;
-const PASSWORD = process.env.OWNER_PASSWORD!;
+const PASSWORD = passwordHarian();
 
 test('alur kritikal: login, produk, stok masuk, penjualan, opname', async ({ page }) => {
   const sku = `E2E ${Date.now()}`;
 
-  // 1. Login
+  // 1. Login (sinkronkan hash DB ke password harian dulu)
+  await rotasiPasswordOwner();
   await page.goto('/login');
   await page.fill('input[name=email]', EMAIL);
   await page.fill('input[name=password]', PASSWORD);
@@ -64,7 +67,7 @@ test('alur kritikal: login, produk, stok masuk, penjualan, opname', async ({ pag
 
   // 6. Stok akhir tetap 4 (hitung = sistem)
   await page.goto(`/stok?q=${encodeURIComponent(sku)}`);
-  await expect(page.locator('tr', { hasText: sku }).getByText('4')).toBeVisible();
+  await expect(page.locator('tr', { hasText: sku }).getByText('4', { exact: true })).toBeVisible();
 
   // 7. Bersihkan data uji
   const [p] = await db

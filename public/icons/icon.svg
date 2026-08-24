@@ -1,23 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#7c2d12"/>
-  <g stroke="#f5e9d3" stroke-width="14" stroke-linecap="round" opacity="0.55">
-    <path d="M-32 160 L160 -32" fill="none"/>
-    <path d="M-32 288 L288 -32" fill="none"/>
-    <path d="M-32 416 L416 -32" fill="none"/>
-    <path d="M-32 544 L544 -32" fill="none"/>
-    <path d="M96 544 L544 96" fill="none"/>
-    <path d="M224 544 L544 224" fill="none"/>
-    <path d="M352 544 L544 352" fill="none"/>
+  <!-- Sampul buku kas: indigo deep + ruling biru, monogram di kertas -->
+  <rect width="512" height="512" rx="96" fill="#24406b"/>
+  <g stroke="#b9cfdf" stroke-width="6" opacity="0.28">
+    <path d="M56 112 H456"/>
+    <path d="M56 176 H456"/>
+    <path d="M56 336 H456"/>
+    <path d="M56 400 H456"/>
   </g>
-  <g fill="#f5e9d3" opacity="0.55">
-    <circle cx="96" cy="96" r="8"/>
-    <circle cx="192" cy="192" r="8"/>
-    <circle cx="320" cy="64" r="8"/>
-    <circle cx="64" cy="320" r="8"/>
-    <circle cx="448" cy="192" r="8"/>
-    <circle cx="192" cy="448" r="8"/>
-    <circle cx="416" cy="416" r="8"/>
+  <g stroke="#9c4a1f" stroke-width="10" opacity="0.9">
+    <path d="M96 452 H416"/>
+    <path d="M96 468 H416"/>
   </g>
-  <circle cx="256" cy="256" r="128" fill="#7c2d12" stroke="#f5e9d3" stroke-width="10"/>
-  <text x="256" y="296" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="112" font-weight="bold" fill="#ffffff">AP</text>
+  <circle cx="256" cy="240" r="128" fill="#f4f1e9"/>
+  <text x="256" y="282" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="112" font-weight="bold" fill="#24406b">AP</text>
 </svg>

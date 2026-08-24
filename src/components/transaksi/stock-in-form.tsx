@@ -71,7 +71,11 @@ export function StockInForm({ products }: { products: StockInProduct[] }) {
           onValueChange={(v) => onProductChange((v as string) ?? '')}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Pilih produk" />
+            <SelectValue placeholder="Pilih produk">
+              {(value: string | null) =>
+                products.find((p) => p.id === value)?.name ?? 'Pilih produk'
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {products.map((p) => (

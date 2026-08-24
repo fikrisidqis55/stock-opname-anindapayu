@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { RowDetailDialog } from '@/components/ui/row-detail';
 import {
   Table,
   TableBody,
@@ -10,6 +11,7 @@ import {
 } from '@/components/ui/table';
 import { formatRupiah, formatTanggal } from '@/lib/format';
 import { dailySales, salesProfitByType } from '@/server/repositories/reports';
+import { listSalesInRange } from '@/server/repositories/transactions';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,10 +40,18 @@ export default async function LaporanPenjualanPage({
   const fromDate = new Date(`${fromStr}T00:00:00`);
   const toDate = new Date(`${toStr}T23:59:59`);
 
-  const [byType, daily] = await Promise.all([
+  const [byType, daily, salesInRange] = await Promise.all([
     salesProfitByType(fromDate, toDate),
     dailySales(fromDate, toDate),
+    listSalesInRange(fromDate, toDate),
   ]);
+
+  const salesByType = new Map<string, typeof salesInRange>();
+  for (const s of salesInRange) {
+    const arr = salesByType.get(s.saleType) ?? [];
+    arr.push(s);
+    salesByType.set(s.saleType, arr);
+  }
 
   const totals = byType.reduce(
     (acc, r) => ({
@@ -71,21 +81,24 @@ export default async function LaporanPenjualanPage({
       </form>
 
       <div className="rounded-lg border">
-        <Table>
+        <Table className="sm:min-w-[640px]">
           <TableHeader>
             <TableRow>
               <TableHead>Tipe</TableHead>
-              <TableHead>Transaksi</TableHead>
-              <TableHead>Qty</TableHead>
+              <TableHead className="hidden sm:table-cell">Transaksi</TableHead>
+              <TableHead className="hidden sm:table-cell">Qty</TableHead>
               <TableHead>Omzet</TableHead>
-              <TableHead>HPP</TableHead>
+              <TableHead className="hidden sm:table-cell">HPP</TableHead>
               <TableHead>Laba</TableHead>
+              <TableHead className="sticky right-0 border-l border-border bg-background">
+                <span className="sr-only">Aksi</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {byType.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-muted-foreground">
+                <TableCell colSpan={7} className="text-muted-foreground">
                   Tidak ada penjualan pada rentang ini.
                 </TableCell>
               </TableRow>
@@ -96,22 +109,56 @@ export default async function LaporanPenjualanPage({
               return (
                 <TableRow key={r.saleType}>
                   <TableCell>{TYPE_LABEL[r.saleType] ?? r.saleType}</TableCell>
-                  <TableCell>{r.transactions}</TableCell>
-                  <TableCell>{r.totalQty}</TableCell>
+                  <TableCell className="hidden sm:table-cell">{r.transactions}</TableCell>
+                  <TableCell className="hidden sm:table-cell">{r.totalQty}</TableCell>
                   <TableCell>{formatRupiah(revenue)}</TableCell>
-                  <TableCell>{formatRupiah(cost)}</TableCell>
+                  <TableCell className="hidden sm:table-cell">{formatRupiah(cost)}</TableCell>
                   <TableCell>{formatRupiah(revenue - cost)}</TableCell>
+                  <TableCell className="sticky right-0 border-l border-border bg-background group-hover:bg-muted">
+                    <RowDetailDialog
+                      title={`Rincian ${TYPE_LABEL[r.saleType] ?? r.saleType}`}
+                      description={`${formatTanggal(fromDate)} s.d. ${formatTanggal(toDate)}`}
+                    >
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="rule-double text-left text-xs tracking-wide text-muted-foreground uppercase">
+                            <th className="py-1 font-medium">Tanggal</th>
+                            <th className="py-1 text-right font-medium">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(salesByType.get(r.saleType) ?? []).map((s) => (
+                            <tr key={s.id} className="rule-row">
+                              <td className="py-1.5">
+                                {formatTanggal(s.createdAt)}
+                                <span className="block text-xs text-muted-foreground">
+                                  {s.customerName ?? 'Tanpa nama'}
+                                </span>
+                              </td>
+                              <td className="tnum py-1.5 text-right font-medium">
+                                {formatRupiah(s.totalPrice)}
+                                <span className="block text-xs font-normal text-pencil-green">
+                                  laba {formatRupiah(s.totalPrice - s.totalCost)}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </RowDetailDialog>
+                  </TableCell>
                 </TableRow>
               );
             })}
             {byType.length > 0 && (
               <TableRow className="font-semibold">
                 <TableCell>Total</TableCell>
-                <TableCell>{totals.transactions}</TableCell>
-                <TableCell>{totals.qty}</TableCell>
+                <TableCell className="hidden sm:table-cell">{totals.transactions}</TableCell>
+                <TableCell className="hidden sm:table-cell">{totals.qty}</TableCell>
                 <TableCell>{formatRupiah(totals.revenue)}</TableCell>
-                <TableCell>{formatRupiah(totals.cost)}</TableCell>
+                <TableCell className="hidden sm:table-cell">{formatRupiah(totals.cost)}</TableCell>
                 <TableCell>{formatRupiah(totals.revenue - totals.cost)}</TableCell>
+                <TableCell className="sticky right-0 border-l border-border bg-background" />
               </TableRow>
             )}
           </TableBody>
@@ -121,13 +168,13 @@ export default async function LaporanPenjualanPage({
       {daily.length > 0 && (
         <div className="space-y-2">
           <h2 className="text-lg font-semibold">Omzet harian</h2>
-          <div className="flex h-40 items-end gap-2">
+          <div className="flex h-40 gap-2">
             {daily.map((d) => {
               const pct = maxDaily > 0 ? Math.round((Number(d.total) / maxDaily) * 100) : 0;
               return (
                 <div
                   key={String(d.day)}
-                  className="flex flex-1 flex-col items-center gap-1"
+                  className="flex h-full flex-1 flex-col items-center justify-end gap-1"
                   title={`${formatTanggal(new Date(String(d.day)))}: ${formatRupiah(Number(d.total))}`}
                 >
                   <div

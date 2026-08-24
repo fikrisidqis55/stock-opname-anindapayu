@@ -51,13 +51,13 @@ Aninda Payu adalah toko pakaian batik yang membutuhkan aplikasi untuk:
 
 | Komponen | Pilihan |
 |---|---|
-| Framework | Next.js 15 (App Router, TypeScript) |
+| Framework | Next.js 16 (App Router, TypeScript) |
 | Database | PostgreSQL (Neon) |
 | ORM | Drizzle ORM + drizzle-kit (migrasi) |
 | Auth | Auth.js v5, provider credentials (email + password, hash bcrypt) |
 | UI | Tailwind CSS + shadcn/ui, desain mobile-first |
 | Validasi | Zod (semua input server) |
-| File storage | UploadThing (foto produk) |
+| File storage | Foto produk: data-URI base64 di `products.photo_url` (kompresi sisi klien, maks 1000px JPEG) |
 | PWA | `manifest.ts` + service worker (cache aset statis/app-shell saja) |
 | Testing | Vitest (unit), Playwright (E2E) |
 | Deploy | Vercel |
@@ -128,7 +128,7 @@ Semua tabel memakai `id` (uuid), `created_at`, dan `updated_at` kecuali dinyatak
 | id | uuid PK | |
 | name | text | nama produk |
 | category_id | uuid FK → categories | jenis babaran |
-| photo_url | text nullable | dari UploadThing |
+| photo_url | text nullable | data-URI base64 hasil kompresi klien (atau URL http lama) |
 | price_modal | integer | harga modal |
 | price_ecer | integer | harga jual ecer |
 | price_grosir | integer | harga jual grosir |
@@ -269,6 +269,7 @@ Semua laporan responsif (HP & desktop), filter rentang tanggal (kecuali stok), t
 
 - Auth.js v5 provider credentials; sesi berisi `user.id` + `role`.
 - Hash password dengan bcrypt; rate limiting dasar pada endpoint login.
+- Password owner dirotasi harian oleh Vercel Cron (`vercel.json`, 00:05 WIB) ke format `AnindaDDMM!` lewat endpoint `/api/cron/rotasi-password` (Bearer `CRON_SECRET`); login murni memverifikasi hash dari DB. `CRON_SECRET` wajib ditambahkan manual ke Environment Variables project Vercel; di Hobby cron jalan sekali per hari (bisa meleset dalam jam yang sama — tetap tanggal WIB yang benar).
 - Semua halaman kecuali `/login` dilindungi middleware session.
 - Semua Server Action memverifikasi session sebelum eksekusi.
 - Validasi zod di setiap input server; error ramah ditampilkan via toast.
@@ -276,9 +277,23 @@ Semua laporan responsif (HP & desktop), filter rentang tanggal (kecuali stok), t
 
 ## 10. PWA & UX
 
-- `manifest.ts` + ikon (192 & 512px), nama "Aninda Payu", installable ke home screen.
+- `manifest.ts` + ikon PNG 192/512 + maskable (diraster dari `public/icons/icon*.svg` lewat `scripts/icons-png.mjs`), nama "Aninda Payu", installable ke home screen.
 - Service worker hanya cache aset statis/app-shell — **data tetap online**; fondasi offline-first disiapkan lewat isolasi repository layer.
 - Mobile-first: bottom navigation **Stok · Transaksi · Opname · Laporan · Pengaturan**; tombol besar; input numerik cepat; format Rupiah (`Rp 150.000`).
+
+### Runbook mobile: deploy → install
+
+Prasyarat: deploy ke Vercel (HTTPS) — semua jalur di bawah memakai web yang sudah deploy.
+
+1. **iOS (tanpa store)**: buka URL di **Safari** → tombol Share → *Add to Home Screen*. Ikon muncul di home screen dan terbuka standalone (tanpa address bar).
+2. **Android tanpa store**: Chrome → menu ⋮ → *Add to Home screen* / prompt *Install app*.
+3. **Android via Play Store (TWA)**:
+   1. Pastikan `https://<domain>/manifest.webmanifest` berisi ikon PNG 512 + maskable, dan SW terdaftar (sudah).
+   2. Buka **pwabuilder.com**, masukkan URL domain → *Start* → unduh paket Android (AAB). Tidak butuh JDK/Android SDK lokal.
+   3. Buat akun Play Console (biaya sekali $25), buat app dengan package `local.anindapayu.stok`, upload AAB (internal testing dulu).
+   4. Salin fingerprint **App signing** (SHA-256) dari Play Console → isi ke `public/.well-known/assetlinks.json` → deploy ulang.
+   5. Rilis ke production track. Verifikasi domain (Digital Asset Links) membuat TWA membuka web app secara fullscreen tanpa address bar.
+4. Update web = update app: TWA/PWA selalu menyajikan versi ter-deploy; tidak ada upload ulang AAB kecuali perubahan shell.
 
 ## 11. Strategi Testing
 

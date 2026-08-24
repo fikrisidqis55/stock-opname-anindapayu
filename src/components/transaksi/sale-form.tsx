@@ -146,7 +146,12 @@ export function SaleForm({ products }: { products: SaleProduct[] }) {
                 onValueChange={(v) => onProductChange(i, (v as string) ?? '')}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Pilih produk" />
+                  <SelectValue placeholder="Pilih produk">
+                    {(value: string | null) => {
+                      const prod = products.find((x) => x.id === value);
+                      return prod ? `${prod.name} (stok ${prod.stockQty})` : 'Pilih produk';
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {products.map((prod) => (

@@ -3,7 +3,15 @@ import { z } from 'zod';
 export const productInputSchema = z.object({
   name: z.string().min(1, 'Nama wajib diisi').max(120),
   categoryId: z.uuid(),
-  photoUrl: z.string().nullish().or(z.literal('')),
+  photoUrl: z
+    .string()
+    .max(1_500_000, 'Foto terlalu besar untuk disimpan')
+    .refine(
+      (v) => v === '' || v.startsWith('data:image/') || v.startsWith('http'),
+      'Format foto tidak didukung',
+    )
+    .nullish()
+    .or(z.literal('')),
   priceModal: z.coerce.number().int().min(0),
   priceEcer: z.coerce.number().int().min(0),
   priceGrosir: z.coerce.number().int().min(0),

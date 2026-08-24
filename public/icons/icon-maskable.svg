@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Varian maskable: full-bleed, artwork dalam safe zone 80% -->
+  <rect width="512" height="512" fill="#24406b"/>
+  <g stroke="#b9cfdf" stroke-width="6" opacity="0.28">
+    <path d="M0 112 H512"/>
+    <path d="M0 176 H512"/>
+    <path d="M0 336 H512"/>
+    <path d="M0 400 H512"/>
+  </g>
+  <circle cx="256" cy="256" r="112" fill="#f4f1e9"/>
+  <text x="256" y="294" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="98" font-weight="bold" fill="#24406b">AP</text>
+</svg>

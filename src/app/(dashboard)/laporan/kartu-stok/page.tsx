@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { DetailList, RowDetailDialog } from '@/components/ui/row-detail';
 import {
   Table,
   TableBody,
@@ -14,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatTanggal } from '@/lib/format';
+import { formatTanggal, formatWaktu } from '@/lib/format';
 import { listActiveProducts } from '@/server/repositories/products';
 import { stockCard } from '@/server/repositories/reports';
 
@@ -25,6 +26,12 @@ const TYPE_LABEL: Record<string, string> = {
   in_purchase: 'Kulakan luar',
   sale: 'Penjualan',
   opname_adjust: 'Penyesuaian opname',
+};
+
+const REF_LABEL: Record<string, string> = {
+  batch: 'Stok masuk',
+  sale: 'Penjualan',
+  opname_item: 'Sesi opname',
 };
 
 export default async function KartuStokPage({
@@ -55,7 +62,7 @@ export default async function KartuStokPage({
           <select
             name="productId"
             defaultValue={productId ?? ''}
-            className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring"
+            className="h-9 w-full rounded-md border border-input bg-card px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
           >
             <option value="" disabled>
               Pilih produk
@@ -104,31 +111,73 @@ export default async function KartuStokPage({
           </div>
 
           <div className="rounded-lg border">
-            <Table>
+            <Table className="sm:min-w-[560px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Tanggal</TableHead>
-                  <TableHead>Kejadian</TableHead>
-                  <TableHead>Masuk</TableHead>
-                  <TableHead>Keluar</TableHead>
-                  <TableHead>Saldo</TableHead>
+                  <TableHead className="hidden sm:table-cell">Kejadian</TableHead>
+                  <TableHead className="hidden sm:table-cell">Masuk</TableHead>
+                  <TableHead>
+                    <span className="sm:hidden">Mutasi</span>
+                    <span className="hidden sm:inline">Keluar</span>
+                  </TableHead>
+                  <TableHead className="hidden sm:table-cell">Saldo</TableHead>
+                  <TableHead className="sticky right-0 border-l border-border bg-background">
+                    <span className="sr-only">Aksi</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {card.rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-muted-foreground">
+                    <TableCell colSpan={6} className="text-muted-foreground">
                       Tidak ada mutasi pada rentang ini.
                     </TableCell>
                   </TableRow>
                 )}
                 {card.rows.map((m) => (
                   <TableRow key={m.id}>
-                    <TableCell>{formatTanggal(m.occurredAt)}</TableCell>
-                    <TableCell>{TYPE_LABEL[m.type] ?? m.type}</TableCell>
-                    <TableCell>{m.qtyChange > 0 ? `+${m.qtyChange}` : ''}</TableCell>
-                    <TableCell>{m.qtyChange < 0 ? m.qtyChange : ''}</TableCell>
-                    <TableCell>{m.balance}</TableCell>
+                    <TableCell>
+                      {formatTanggal(m.occurredAt)}
+                      <span className="block text-xs text-muted-foreground sm:hidden">
+                        saldo {m.balance} pcs
+                      </span>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {TYPE_LABEL[m.type] ?? m.type}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {m.qtyChange > 0 ? `+${m.qtyChange}` : ''}
+                    </TableCell>
+                    <TableCell>
+                      <span className="sm:hidden">
+                        {m.qtyChange > 0 ? `+${m.qtyChange}` : m.qtyChange}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {m.qtyChange < 0 ? m.qtyChange : ''}
+                      </span>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">{m.balance}</TableCell>
+                    <TableCell className="sticky right-0 border-l border-border bg-background group-hover:bg-muted">
+                      <RowDetailDialog
+                        title={TYPE_LABEL[m.type] ?? m.type}
+                        description={formatWaktu(m.occurredAt)}
+                      >
+                        <DetailList
+                          rows={[
+                            ['Kejadian', TYPE_LABEL[m.type] ?? m.type],
+                            ['Waktu', formatWaktu(m.occurredAt)],
+                            ['Rujukan', REF_LABEL[m.refType] ?? m.refType],
+                            [
+                              'Perubahan',
+                              m.qtyChange > 0 ? `+${m.qtyChange} pcs` : `${m.qtyChange} pcs`,
+                            ],
+                            ['Saldo akhir', `${m.balance} pcs`],
+                            ...(m.note ? ([['Catatan', m.note]] as [string, string][]) : []),
+                          ]}
+                        />
+                      </RowDetailDialog>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

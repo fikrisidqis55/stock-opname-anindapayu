@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -21,8 +22,8 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 function statusBadgeClass(status: string) {
-  if (status === 'counting') return 'bg-yellow-100 text-yellow-900';
-  if (status === 'completed') return 'bg-green-100 text-green-900';
+  if (status === 'counting') return 'bg-soga/10 text-soga';
+  if (status === 'completed') return 'bg-pencil-green/10 text-pencil-green';
   return 'bg-muted text-muted-foreground';
 }
 
@@ -40,14 +41,17 @@ export default async function OpnamePage() {
         </p>
       ) : (
         <div className="rounded-lg border">
-          <Table>
+          <Table className="sm:min-w-[640px]">
             <TableHeader>
               <TableRow>
                 <TableHead>Label</TableHead>
                 <TableHead>Mulai</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Selisih (pcs)</TableHead>
-                <TableHead>Nilai selisih</TableHead>
+                <TableHead className="hidden sm:table-cell">Status</TableHead>
+                <TableHead className="hidden sm:table-cell">Selisih (pcs)</TableHead>
+                <TableHead className="hidden sm:table-cell">Nilai selisih</TableHead>
+                <TableHead className="sticky right-0 border-l border-border bg-background">
+                  <span className="sr-only">Aksi</span>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -60,18 +64,31 @@ export default async function OpnamePage() {
                     >
                       {s.label}
                     </Link>
+                    <span className="block text-xs text-muted-foreground sm:hidden">
+                      {STATUS_LABEL[s.status] ?? s.status}
+                      {s.status === 'completed' ? ` · selisih ${s.totalDiffQty} pcs` : ''}
+                    </span>
                   </TableCell>
                   <TableCell>{formatTanggal(s.startedAt)}</TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <Badge className={statusBadgeClass(s.status)}>
                       {STATUS_LABEL[s.status] ?? s.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     {s.status === 'completed' ? s.totalDiffQty : '—'}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     {s.status === 'completed' ? formatRupiah(s.totalDiffValue) : '—'}
+                  </TableCell>
+                  <TableCell className="sticky right-0 border-l border-border bg-background group-hover:bg-muted">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      render={<Link href={`/opname/${s.id}`} />}
+                    >
+                      Detail
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

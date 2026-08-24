@@ -131,7 +131,7 @@ export function CountSheet({
   return (
     <div className="space-y-4">
       {editable && (
-        <p className="rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-900">
+        <p className="rounded-md border border-soga/50 bg-soga/10 p-3 text-sm text-soga">
           Stok sistem difoto saat sesi dibuat — jangan catat penjualan / stok
           masuk selama opname.
         </p>
@@ -187,7 +187,7 @@ export function CountSheet({
                           '—'
                         ) : (
                           <span
-                            className={diff < 0 ? 'text-red-600' : 'text-green-600'}
+                            className={diff < 0 ? 'text-pencil' : 'text-pencil-green'}
                           >
                             {diff > 0 ? `+${diff}` : diff}
                           </span>
@@ -222,7 +222,7 @@ export function CountSheet({
                   <TableCell>{d.row.item.systemQty}</TableCell>
                   <TableCell>{d.counted}</TableCell>
                   <TableCell>
-                    <span className={d.diff < 0 ? 'text-red-600' : 'text-green-600'}>
+                    <span className={d.diff < 0 ? 'text-pencil' : 'text-pencil-green'}>
                       {d.diff > 0 ? `+${d.diff}` : d.diff}
                     </span>
                   </TableCell>

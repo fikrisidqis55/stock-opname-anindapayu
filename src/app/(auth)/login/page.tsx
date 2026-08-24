@@ -21,7 +21,7 @@ export default function LoginPage() {
     });
     setLoading(false);
     if (res?.error) {
-      setError('Email atau password salah');
+      setError('Email atau password salah. Periksa lagi lalu coba masuk.');
       return;
     }
     router.push('/');
@@ -32,34 +32,56 @@ export default function LoginPage() {
     <main className="flex min-h-dvh items-center justify-center p-4">
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-sm space-y-4 rounded-xl border bg-card p-6"
+        className="w-full max-w-sm border border-border bg-card p-6"
       >
-        <div>
-          <h1 className="text-xl font-bold">Aninda Payu</h1>
-          <p className="text-sm text-muted-foreground">Masuk untuk mengelola stok batik</p>
+        <header className="text-center">
+          <h1 className="border-b-0 pb-0 font-heading text-2xl font-bold">Aninda Payu</h1>
+          <div className="rule-double mt-2" aria-hidden />
+          <p className="mt-3 text-sm text-muted-foreground">
+            Masuk untuk mengelola stok batik
+          </p>
+        </header>
+        <div className="mt-6 space-y-4">
+          <div>
+            <label htmlFor="email" className="mb-1 block text-sm font-medium">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="nama@toko.batik"
+              className="h-10 w-full rounded-md border border-input bg-background px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-1 block text-sm font-medium"
+            >
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              autoComplete="current-password"
+              placeholder="••••••••"
+              className="h-10 w-full rounded-md border border-input bg-background px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
+            />
+          </div>
+          {error && <p className="text-sm text-pencil">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="h-10 w-full rounded-md bg-primary text-sm font-semibold text-primary-foreground hover:bg-indigo-deep disabled:opacity-50"
+          >
+            {loading ? 'Memproses…' : 'Masuk'}
+          </button>
         </div>
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="Email"
-          className="w-full rounded-md border px-3 py-2"
-        />
-        <input
-          name="password"
-          type="password"
-          required
-          placeholder="Password"
-          className="w-full rounded-md border px-3 py-2"
-        />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
-        >
-          {loading ? 'Memproses…' : 'Masuk'}
-        </button>
       </form>
     </main>
   );

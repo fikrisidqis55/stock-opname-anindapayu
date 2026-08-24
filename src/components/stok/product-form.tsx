@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { UploadButton } from '@uploadthing/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { createProductAction, updateProductAction } from '@/actions/products';
@@ -15,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { OurFileRouter } from '@/app/api/uploadthing/core';
 
 export type ProductFormInitial = {
   id?: string;
@@ -29,6 +27,23 @@ export type ProductFormInitial = {
   minStockQty?: number | null;
 };
 
+// Kompres foto di klien (maks 1000px, JPEG 0.8) agar payload & DB tetap kecil.
+async function compressToDataUri(file: File): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const max = 1000;
+  const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+  const w = Math.max(1, Math.round(bitmap.width * scale));
+  const h = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas tidak tersedia');
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  bitmap.close();
+  return canvas.toDataURL('image/jpeg', 0.8);
+}
+
 export function ProductForm({
   categories,
   initial,
@@ -41,6 +56,7 @@ export function ProductForm({
   const [name, setName] = useState(initial?.name ?? '');
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? '');
   const [photoUrl, setPhotoUrl] = useState(initial?.photoUrl ?? '');
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [priceModal, setPriceModal] = useState(String(initial?.priceModal ?? ''));
   const [priceEcer, setPriceEcer] = useState(String(initial?.priceEcer ?? ''));
   const [priceGrosir, setPriceGrosir] = useState(String(initial?.priceGrosir ?? ''));
@@ -50,6 +66,28 @@ export function ProductForm({
   const [minStockQty, setMinStockQty] = useState(
     initial?.minStockQty != null ? String(initial.minStockQty) : '',
   );
+
+  async function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Berkas harus berupa gambar');
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      toast.error('Ukuran foto maksimal 4MB');
+      return;
+    }
+    setPhotoBusy(true);
+    try {
+      setPhotoUrl(await compressToDataUri(file));
+    } catch {
+      toast.error('Gagal memproses foto');
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -95,7 +133,11 @@ export function ProductForm({
         <Label>Kategori babaran</Label>
         <Select value={categoryId} onValueChange={(v) => setCategoryId((v as string) ?? '')}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Pilih kategori" />
+            <SelectValue placeholder="Pilih kategori">
+              {(value: string | null) =>
+                categories.find((c) => c.id === value)?.name ?? 'Pilih kategori'
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {categories.map((c) => (
@@ -108,24 +150,36 @@ export function ProductForm({
       </div>
 
       <div className="space-y-1">
-        <Label>Foto produk (opsional)</Label>
+        <Label htmlFor="photo">Foto produk (opsional)</Label>
         {photoUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photoUrl} alt="Foto produk" className="h-24 w-24 rounded-md object-cover" />
+          <img
+            src={photoUrl}
+            alt="Foto produk"
+            className="h-24 w-24 rounded-md border border-border object-cover"
+          />
         )}
-        <UploadButton<OurFileRouter, 'productPhoto'>
-          endpoint="productPhoto"
-          onClientUploadComplete={(res) => {
-            const url = res?.[0]?.ufsUrl;
-            if (url) {
-              setPhotoUrl(url);
-              toast.success('Foto terunggah');
-            }
-          }}
-          onUploadError={(err) => {
-            toast.error(`Gagal upload: ${err.message}`);
-          }}
+        <Input
+          id="photo"
+          type="file"
+          accept="image/*"
+          onChange={onPhotoChange}
+          disabled={photoBusy}
+          className="cursor-pointer"
         />
+        <p className="text-xs text-muted-foreground">
+          Maksimal 4MB. Foto dikompres otomatis dan ikut tersimpan bersama data produk.
+        </p>
+        {photoUrl && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setPhotoUrl('')}
+          >
+            Hapus foto
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-3">

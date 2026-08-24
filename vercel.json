@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/rotasi-password",
+      "schedule": "5 17 * * *"
+    }
+  ]
+}

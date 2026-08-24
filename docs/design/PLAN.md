@@ -4,9 +4,9 @@
 
 **Goal:** Membangun PWA stock opname batik "Aninda Payu" — stok masuk (produksi sendiri/kulakan luar), stok keluar (ecer/grosir/kulakan), sesi opname dengan selisih, dan 3 laporan.
 
-**Architecture:** Next.js 15 App Router full-stack. UI (RSC + Server Actions) → services (logika bisnis) → repositories (Drizzle ORM) → PostgreSQL (Neon). Ledger `stock_movements` sebagai sumber kebenaran riwayat; `stock_qty` produk adalah denormalisasi yang diperbarui dalam transaksi DB yang sama.
+**Architecture:** Next.js 16 App Router full-stack. UI (RSC + Server Actions) → services (logika bisnis) → repositories (Drizzle ORM) → PostgreSQL (Neon). Ledger `stock_movements` sebagai sumber kebenaran riwayat; `stock_qty` produk adalah denormalisasi yang diperbarui dalam transaksi DB yang sama.
 
-**Tech Stack:** Next.js 15 · TypeScript · Tailwind CSS v4 · shadcn/ui · Drizzle ORM + drizzle-kit · PostgreSQL (Neon) · next-auth v5 (credentials) · bcryptjs · zod · UploadThing · Vitest · Playwright.
+**Tech Stack:** Next.js 16 · TypeScript · Tailwind CSS v4 · shadcn/ui · Drizzle ORM + drizzle-kit · PostgreSQL (Neon) · next-auth v5 (credentials) · bcryptjs · zod · UploadThing · Vitest · Playwright.
 
 **Spec:** `docs/design/SPEC.md`
 
@@ -105,7 +105,7 @@ aninda-payu/
 - Consumes: tidak ada
 - Produces: proyek Next.js 15 yang bisa `npm run dev` dan `npm test`; alias `@/` → `src/`
 
-- [ ] **Step 1: Scaffold Next.js di folder sementara**
+- [x] **Step 1: Scaffold Next.js di folder sementara**
 
 Folder `aninda-payu` sudah berisi `.git` dan `docs`. Scaffold di folder terpisah lalu salin:
 
@@ -116,7 +116,7 @@ npx create-next-app@latest aninda-payu-tmp --typescript --tailwind --eslint --ap
 
 Bila ditanya Turbopack/React Compiler, terima default (flag `--yes`).
 
-- [ ] **Step 2: Salin hasil scaffold ke `aninda-payu` (kecuali `.git`)**
+- [x] **Step 2: Salin hasil scaffold ke `aninda-payu` (kecuali `.git`)**
 
 ```powershell
 robocopy aninda-payu-tmp aninda-payu /E /XD .git
@@ -128,7 +128,7 @@ Catatan: exit code robocopy 0–7 berarti sukses. Lalu hapus folder sementara (h
 Remove-Item -Recurse -Force .\aninda-payu-tmp
 ```
 
-- [ ] **Step 3: Instal dependensi tambahan**
+- [x] **Step 3: Instal dependensi tambahan**
 
 ```powershell
 cd aninda-payu
@@ -136,7 +136,7 @@ npm i drizzle-orm postgres drizzle-kit next-auth@beta @auth/core bcryptjs zod up
 npm i -D vitest tsx @types/bcryptjs @playwright/test
 ```
 
-- [ ] **Step 4: Tambah npm scripts**
+- [x] **Step 4: Tambah npm scripts**
 
 Tambahkan ke `package.json` bagian `"scripts"`:
 
@@ -150,7 +150,7 @@ Tambahkan ke `package.json` bagian `"scripts"`:
 "e2e": "playwright test"
 ```
 
-- [ ] **Step 5: Buat `vitest.config.ts`**
+- [x] **Step 5: Buat `vitest.config.ts`**
 
 ```ts
 import { defineConfig } from 'vitest/config';
@@ -162,7 +162,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 6: Buat `.env.example`**
+- [x] **Step 6: Buat `.env.example`**
 
 ```env
 # PostgreSQL (Neon)
@@ -178,7 +178,7 @@ OWNER_PASSWORD=
 
 Salin juga menjadi `.env` lokal (isi kemudian). Pastikan `.gitignore` mengabaikan `.env` (sudah dari scaffold).
 
-- [ ] **Step 7: Verifikasi scaffold jalan**
+- [x] **Step 7: Verifikasi scaffold jalan**
 
 ```powershell
 npm run build
@@ -186,7 +186,7 @@ npm run build
 
 Expected: build sukses (halaman default Next.js).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```powershell
 git add .
@@ -205,11 +205,11 @@ git commit -m "chore: scaffold Next.js 15 + dependensi dasar"
 - Consumes: Task 1 (npm scripts, env)
 - Produces: `db` (instance drizzle), semua tabel: `users`, `categories`, `products`, `stockBatches`, `sales`, `saleItems`, `stockMovements`, `opnameSessions`, `opnameItems`; seed 5 kategori babaran + owner
 
-- [ ] **Step 1: Prasyarat manual — buat database Neon**
+- [x] **Step 1: Prasyarat manual — buat database Neon**
 
 Buat project di neon.tech, salin connection string ke `.env` sebagai `DATABASE_URL`.
 
-- [ ] **Step 2: Tulis `src/server/db/schema.ts`**
+- [x] **Step 2: Tulis `src/server/db/schema.ts`**
 
 ```ts
 import { sql } from 'drizzle-orm';
@@ -327,7 +327,7 @@ export const opnameItems = pgTable('opname_items', {
 }, (t) => [uniqueIndex('opname_items_session_product_uq').on(t.sessionId, t.productId)]);
 ```
 
-- [ ] **Step 3: Tulis `src/server/db/index.ts` dan `drizzle.config.ts`**
+- [x] **Step 3: Tulis `src/server/db/index.ts` dan `drizzle.config.ts`**
 
 ```ts
 // src/server/db/index.ts
@@ -351,7 +351,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 4: Push skema ke database**
+- [x] **Step 4: Push skema ke database**
 
 ```powershell
 npm run db:push
@@ -359,7 +359,7 @@ npm run db:push
 
 Expected: tabel & enum terbuat tanpa error.
 
-- [ ] **Step 5: Tulis `scripts/seed.ts`**
+- [x] **Step 5: Tulis `scripts/seed.ts`**
 
 ```ts
 import bcrypt from 'bcryptjs';
@@ -387,7 +387,7 @@ async function main() {
 main().catch((e) => { console.error(e); process.exit(1); });
 ```
 
-- [ ] **Step 6: Jalankan seed & verifikasi**
+- [x] **Step 6: Jalankan seed & verifikasi**
 
 Isi `OWNER_EMAIL`/`OWNER_PASSWORD` di `.env`, lalu:
 
@@ -397,7 +397,7 @@ npm run db:seed
 
 Expected: "Seed selesai: kategori babaran + akun owner".
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```powershell
 git add .
@@ -415,7 +415,7 @@ git commit -m "feat: skema database Drizzle, koneksi, dan seed kategori + owner"
 - Consumes: tidak ada
 - Produces: `weightedAverageCost(oldQty, oldCost, newQty, newCost): number`, `opnameDiffValue(diffQty, priceModal): number`, `formatRupiah(value): string`, `formatTanggal(date): string`
 
-- [ ] **Step 1: Tulis tes yang gagal**
+- [x] **Step 1: Tulis tes yang gagal**
 
 ```ts
 // tests/unit/domain.test.ts
@@ -457,7 +457,7 @@ describe('formatRupiah', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan tes — pastikan gagal**
+- [x] **Step 2: Jalankan tes — pastikan gagal**
 
 ```powershell
 npm test
@@ -465,7 +465,7 @@ npm test
 
 Expected: FAIL — `@/lib/domain` tidak ditemukan.
 
-- [ ] **Step 3: Implementasi minimal**
+- [x] **Step 3: Implementasi minimal**
 
 ```ts
 // src/lib/domain.ts
@@ -496,7 +496,7 @@ export function formatTanggal(date: Date | string): string {
 }
 ```
 
-- [ ] **Step 4: Jalankan tes — pastikan lulus**
+- [x] **Step 4: Jalankan tes — pastikan lulus**
 
 ```powershell
 npm test
@@ -504,7 +504,7 @@ npm test
 
 Expected: semua PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add tests src/lib
@@ -523,7 +523,7 @@ git commit -m "test: logika domain murni (modal rata-rata, selisih opname, forma
 - Consumes: Task 2 (`db`, `users`)
 - Produces: `auth()` helper (session berisi `user.id`, `user.role`), middleware proteksi semua rute kecuali `/login` dan `api/auth`
 
-- [ ] **Step 1: Generate AUTH_SECRET**
+- [x] **Step 1: Generate AUTH_SECRET**
 
 ```powershell
 npx auth secret
@@ -531,7 +531,7 @@ npx auth secret
 
 Expected: `AUTH_SECRET` terisi otomatis di `.env`.
 
-- [ ] **Step 2: Tulis `src/server/auth.ts`**
+- [x] **Step 2: Tulis `src/server/auth.ts`**
 
 ```ts
 import bcrypt from 'bcryptjs';
@@ -577,7 +577,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 });
 ```
 
-- [ ] **Step 3: Augmentasi tipe `src/types/next-auth.d.ts`**
+- [x] **Step 3: Augmentasi tipe `src/types/next-auth.d.ts`**
 
 ```ts
 import type { DefaultSession } from 'next-auth';
@@ -598,7 +598,7 @@ declare module 'next-auth/jwt' {
 
 Pastikan `tsconfig.json` `include` mencakup `src/types/**/*.d.ts` (default scaffold sudah mencakup `src`).
 
-- [ ] **Step 4: Middleware & route handler**
+- [x] **Step 4: Middleware & route handler**
 
 ```ts
 // src/middleware.ts
@@ -616,7 +616,7 @@ import { handlers } from '@/server/auth';
 export const { GET, POST } = handlers;
 ```
 
-- [ ] **Step 5: Halaman login `src/app/(auth)/login/page.tsx`**
+- [x] **Step 5: Halaman login `src/app/(auth)/login/page.tsx`**
 
 ```tsx
 'use client';
@@ -668,7 +668,7 @@ export default function LoginPage() {
 }
 ```
 
-- [ ] **Step 6: Verifikasi manual**
+- [x] **Step 6: Verifikasi manual**
 
 ```powershell
 npm run dev
@@ -678,7 +678,7 @@ npm run dev
 - Login dengan email/password owner dari `.env` → masuk ke `/`.
 - Login dengan password salah → muncul "Email atau password salah".
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```powershell
 git add .
@@ -697,14 +697,14 @@ git commit -m "feat: autentikasi Auth.js credentials + middleware proteksi"
 - Consumes: Task 4 (`auth()` dari `@/server/auth`)
 - Produces: shell `(dashboard)` dengan bottom nav mobile & sidebar desktop; komponen shadcn: `button, card, input, label, select, table, badge, dialog, separator, sonner, textarea`
 
-- [ ] **Step 1: Inisialisasi shadcn/ui dan tambah komponen**
+- [x] **Step 1: Inisialisasi shadcn/ui dan tambah komponen**
 
 ```powershell
 npx shadcn@latest init -y -b neutral
 npx shadcn@latest add button card input label select table badge dialog separator sonner textarea
 ```
 
-- [ ] **Step 2: Metadata di `src/app/layout.tsx`**
+- [x] **Step 2: Metadata di `src/app/layout.tsx`**
 
 ```tsx
 export const metadata: Metadata = {
@@ -713,7 +713,7 @@ export const metadata: Metadata = {
 };
 ```
 
-- [ ] **Step 3: Navigasi `src/components/layout/app-nav.tsx`**
+- [x] **Step 3: Navigasi `src/components/layout/app-nav.tsx`**
 
 ```tsx
 'use client';
@@ -764,7 +764,7 @@ export function AppNav() {
 }
 ```
 
-- [ ] **Step 4: Layout dashboard `src/app/(dashboard)/layout.tsx`**
+- [x] **Step 4: Layout dashboard `src/app/(dashboard)/layout.tsx`**
 
 ```tsx
 import { redirect } from 'next/navigation';
@@ -785,15 +785,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
 }
 ```
 
-- [ ] **Step 5: Beranda `src/app/(dashboard)/page.tsx`**
+- [x] **Step 5: Beranda `src/app/(dashboard)/page.tsx`**
 
 Server component dengan `export const dynamic = 'force-dynamic'`. Query produk aktif dengan `minStockQty` tidak null dan `stockQty <= minStockQty` (import `and, eq, lte, isNotNull` dari drizzle-orm) maksimal 10. Render: judul "Beranda", 4 tombol aksi (Catat Penjualan → `/transaksi/jual`, Stok Masuk → `/transaksi/masuk`, Stock Opname → `/opname`, Laporan → `/laporan`) dalam grid 2 kolom mobile / 4 kolom desktop, lalu seksi "Stok Menipis" berisi daftar nama produk + Badge merah qty, atau teks "Tidak ada produk dengan stok menipis." bila kosong.
 
-- [ ] **Step 6: Verifikasi manual**
+- [x] **Step 6: Verifikasi manual**
 
 `npm run dev` → login → beranda tampil dengan 4 tombol aksi; di layar sempit bottom nav terlihat.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```powershell
 git add .
@@ -811,7 +811,7 @@ git commit -m "feat: shell dashboard, navigasi mobile-first, dan beranda"
 - Consumes: Task 2 (skema), Task 3 (`formatRupiah`), Task 4 (`auth`)
 - Produces: `listProductsGroupedByCategory(search?)`, `getProductById(id)`, `createProduct(input)`, `updateProduct(id, input)`, `listCategories()`; action `createProductAction(raw)`, `updateProductAction(id, raw)`; file router UploadThing `productPhoto`
 
-- [ ] **Step 1: Skema zod `src/lib/validators.ts`**
+- [x] **Step 1: Skema zod `src/lib/validators.ts`**
 
 ```ts
 import { z } from 'zod';
@@ -855,7 +855,7 @@ export const saleInputSchema = z.object({
 export type SaleInput = z.infer<typeof saleInputSchema>;
 ```
 
-- [ ] **Step 2: Repository kategori & produk**
+- [x] **Step 2: Repository kategori & produk**
 
 ```ts
 // src/server/repositories/categories.ts
@@ -924,7 +924,7 @@ export function updateProduct(id: string, input: ProductInput) {
 }
 ```
 
-- [ ] **Step 3: UploadThing — `core.ts` & `route.ts`**
+- [x] **Step 3: UploadThing — `core.ts` & `route.ts`**
 
 ```ts
 // src/app/api/uploadthing/core.ts
@@ -957,7 +957,7 @@ export const { GET, POST } = createRouteHandler({ router: ourFileRouter });
 
 Prasyarat manual: buat app di uploadthing.com, isi `UPLOADTHING_TOKEN` di `.env`.
 
-- [ ] **Step 4: Server Actions `src/actions/products.ts`**
+- [x] **Step 4: Server Actions `src/actions/products.ts`**
 
 ```ts
 'use server';
@@ -996,24 +996,24 @@ export async function updateProductAction(id: string, raw: unknown): Promise<Act
 }
 ```
 
-- [ ] **Step 5: Form produk `src/components/stok/product-form.tsx`**
+- [x] **Step 5: Form produk `src/components/stok/product-form.tsx`**
 
 Client component, props `{ categories: { id: string; name: string }[]; initial?: ProductInput & { id?: string } }`. Field: nama (Input), kategori (Select), foto (`UploadButton` dari `@uploadthing/react` dengan `endpoint="productPhoto"`; `onClientUploadComplete` menyimpan `res[0].ufsUrl` ke state `photoUrl`; tampilkan thumbnail bila ada), harga modal/ecer/grosir/kulakan (Input `type="number"`), stok minimum (Input number, boleh kosong). Submit mengumpulkan objek sesuai `ProductInput` lalu memanggil `createProductAction(values)` atau `updateProductAction(initial.id, values)`; bila `!res.ok` tampilkan `toast.error(res.error)`, bila sukses `toast.success('Produk disimpan')` lalu `router.push('/stok'); router.refresh()`.
 
-- [ ] **Step 6: Halaman daftar `src/app/(dashboard)/stok/page.tsx`**
+- [x] **Step 6: Halaman daftar `src/app/(dashboard)/stok/page.tsx`**
 
 Server component: baca `searchParams.q`, panggil `listProductsGroupedByCategory(q)`; render form pencarian GET + tombol "Tambah Produk" (Link `/stok/baru`); untuk tiap kategori render Card berjudul nama kategori, berisi tabel (Foto thumbnail 40px, Nama, Stok — Badge merah bila ≤ minStockQty, Modal, Ecer, Grosir, Kulakan — semua via `formatRupiah`), dan footer Card dengan total qty + total nilai (qty × priceModal). Nama produk adalah Link ke `/stok/[id]/edit`.
 
-- [ ] **Step 7: Halaman baru & edit**
+- [x] **Step 7: Halaman baru & edit**
 
 `stok/baru/page.tsx`: ambil `listCategories()`, render `<ProductForm categories={...} />`.
 `stok/[id]/edit/page.tsx`: panggil `getProductById(params.id)`; bila null panggil `notFound()`; render `<ProductForm categories={...} initial={product} />`.
 
-- [ ] **Step 8: Verifikasi manual**
+- [x] **Step 8: Verifikasi manual**
 
 Buat produk "Kemeja Malaman M01" kategori malaman dengan 4 harga + foto; muncul di `/stok` terkelompok per kategori; edit nama & harga tersimpan.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```powershell
 git add .
@@ -1031,7 +1031,7 @@ git commit -m "feat: modul produk — CRUD, foto UploadThing, daftar per kategor
 - Consumes: Task 2 (skema), Task 3 (`weightedAverageCost`), Task 6 (validator `stockInInputSchema`, daftar produk)
 - Produces: `receiveStock(input: StockInInput)`; action `receiveStockAction(raw): Promise<ActionResult>`
 
-- [ ] **Step 1: Service `src/server/services/stockIn.ts`**
+- [x] **Step 1: Service `src/server/services/stockIn.ts`**
 
 ```ts
 import { eq, sql } from 'drizzle-orm';
@@ -1079,7 +1079,7 @@ export async function receiveStock(input: StockInInput) {
 }
 ```
 
-- [ ] **Step 2: Action di `src/actions/transactions.ts`**
+- [x] **Step 2: Action di `src/actions/transactions.ts`**
 
 ```ts
 'use server';
@@ -1107,17 +1107,17 @@ export async function receiveStockAction(raw: unknown): Promise<ActionResult> {
 }
 ```
 
-- [ ] **Step 3: Form & halaman `transaksi/masuk`**
+- [x] **Step 3: Form & halaman `transaksi/masuk`**
 
 `stock-in-form.tsx` (client): pilih produk (Select dari daftar produk aktif), sumber (radio: Produksi Sendiri / Kulakan Luar), qty, harga modal aktual (default = priceModal produk terpilih — isi otomatis saat produk dipilih, bisa diubah), nama supplier (tampil bila Kulakan Luar), catatan, checkbox "Perbarui harga modal produk ke rata-rata tertimbang" (tampil bila unitCost ≠ modal produk). Submit → `receiveStockAction` → toast sukses & reset form, atau toast error.
 
 `transaksi/masuk/page.tsx`: server component mengambil daftar produk aktif (id, name, priceModal) lalu render `<StockInForm products={...} />`.
 
-- [ ] **Step 4: Verifikasi manual**
+- [x] **Step 4: Verifikasi manual**
 
 Tambah stok masuk produksi 10 pcs @modal; cek `/stok` bertambah 10. Kulakan luar dengan modal berbeda + centang rata-rata tertimbang → harga modal produk berubah sesuai rumus Task 3.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add .
@@ -1136,7 +1136,7 @@ git commit -m "feat: stok masuk per batch (produksi sendiri & kulakan luar) + ra
 - Consumes: Task 2 (skema), Task 6 (validator `saleInputSchema`, daftar produk)
 - Produces: `createSale(input: SaleInput)`, `listRecentSales(limit?)`; action `createSaleAction(raw): Promise<ActionResult>`
 
-- [ ] **Step 1: Service `src/server/services/sales.ts`**
+- [x] **Step 1: Service `src/server/services/sales.ts`**
 
 ```ts
 import { desc, eq, inArray, sql } from 'drizzle-orm';
@@ -1210,7 +1210,7 @@ export function listRecentSales(limit = 50) {
 }
 ```
 
-- [ ] **Step 2: Action `createSaleAction` di `src/actions/transactions.ts`**
+- [x] **Step 2: Action `createSaleAction` di `src/actions/transactions.ts`**
 
 Tambahkan (import `saleInputSchema` dan `createSale`):
 
@@ -1231,7 +1231,7 @@ export async function createSaleAction(raw: unknown): Promise<ActionResult> {
 }
 ```
 
-- [ ] **Step 3: Form penjualan `src/components/transaksi/sale-form.tsx`**
+- [x] **Step 3: Form penjualan `src/components/transaksi/sale-form.tsx`**
 
 Client component, props `{ products }` (produk aktif: id, name, stockQty, priceEcer, priceGrosir, priceKulakan). State: `saleType`, `customerName`, `note`, `items[]` (productId, qty, unitPrice).
 - Pilih tipe → harga baris baru otomatis mengikuti tipe; unitPrice per baris tetap bisa diedit (nego).
@@ -1240,17 +1240,17 @@ Client component, props `{ products }` (produk aktif: id, name, stockQty, priceE
 - Total = Σ subtotal, tampil di bawah.
 - Submit → `createSaleAction` → toast sukses & reset, atau toast error (termasuk pesan stok tidak cukup).
 
-- [ ] **Step 4: Halaman jual & riwayat**
+- [x] **Step 4: Halaman jual & riwayat**
 
 `transaksi/jual/page.tsx`: server component → `<SaleForm products={...} />`.
 
 `transaksi/page.tsx`: riwayat 50 transaksi terakhir (`listRecentSales()`): tanggal, tipe (Badge), nama bakul/pelanggan, total, laba (totalPrice − totalCost) via `formatRupiah`. Link tombol ke `/transaksi/jual` dan `/transaksi/masuk`.
 
-- [ ] **Step 5: Verifikasi manual**
+- [x] **Step 5: Verifikasi manual**
 
 Jual ecer 1 pcs → stok berkurang 1. Jual kulakan tanpa nama bakul → error validasi. Jual qty melebihi stok → error "Stok … tidak cukup". Harga nego tersimpan sebagai unitPrice.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add .
@@ -1268,7 +1268,7 @@ git commit -m "feat: penjualan multi-item (ecer/grosir/kulakan) dengan snapshot 
 - Consumes: Task 2 (skema), Task 3 (`opnameDiffValue`)
 - Produces: `createOpnameSession(label?)`, `saveOpnameCount(sessionId, productId, countedQty)`, `applyOpnameSession(sessionId)`, `cancelOpnameSession(sessionId)`, `listOpnameSessions()`, `getSessionDetail(sessionId)`; actions `createOpnameSessionAction`, `saveOpnameCountAction`, `applyOpnameSessionAction`, `cancelOpnameSessionAction`
 
-- [ ] **Step 1: Repository `src/server/repositories/opname.ts`**
+- [x] **Step 1: Repository `src/server/repositories/opname.ts`**
 
 ```ts
 import { asc, desc, eq } from 'drizzle-orm';
@@ -1296,7 +1296,7 @@ export async function getSessionDetail(sessionId: string) {
 }
 ```
 
-- [ ] **Step 2: Service `src/server/services/opname.ts`**
+- [x] **Step 2: Service `src/server/services/opname.ts`**
 
 ```ts
 import { and, eq, sql } from 'drizzle-orm';
@@ -1374,7 +1374,7 @@ export async function cancelOpnameSession(sessionId: string) {
 }
 ```
 
-- [ ] **Step 3: Actions `src/actions/opname.ts`**
+- [x] **Step 3: Actions `src/actions/opname.ts`**
 
 Pola sama dengan Task 7/8 (cek session `auth()`, bungkus error). Empat action:
 
@@ -1445,7 +1445,7 @@ export async function cancelOpnameSessionAction(sessionId: string): Promise<Acti
 }
 ```
 
-- [ ] **Step 4: Lembar hitung `src/components/opname/count-sheet.tsx`**
+- [x] **Step 4: Lembar hitung `src/components/opname/count-sheet.tsx`**
 
 Client component, props `{ sessionId: string; items }` (items dari `getSessionDetail`, status sesi). Perilaku:
 - Kelompokkan items per `categoryName`; tiap baris: nama produk, stok sistem (`systemQty`), input jumlah fisik (Input number, kosong = belum dihitung).
@@ -1456,19 +1456,19 @@ Client component, props `{ sessionId: string; items }` (items dari `getSessionDe
 - Tombol "Terapkan Penyesuaian" (Dialog konfirmasi berisi total selisih qty & nilai) → `applyOpnameSessionAction` → toast + `router.push('/opname')`; tombol "Batalkan Sesi" (Dialog konfirmasi) → `cancelOpnameSessionAction`.
 - Bila sesi sudah `completed`/`cancelled`: render hanya tabel hasil (tanpa input & tombol).
 
-- [ ] **Step 5: Halaman daftar sesi `opname/page.tsx`**
+- [x] **Step 5: Halaman daftar sesi `opname/page.tsx`**
 
 Server component: `listOpnameSessions()`; tombol "Buat Sesi Opname" (form kecil dengan input label opsional → `createOpnameSessionAction`, lalu redirect ke `/opname/[id]`); tabel sesi: label, tanggal mulai, status Badge (`counting` kuning, `completed` hijau, `cancelled` abu), total selisih qty & nilai (untuk completed), Link ke `/opname/[id]`.
 
-- [ ] **Step 6: Halaman sesi `opname/[id]/page.tsx`**
+- [x] **Step 6: Halaman sesi `opname/[id]/page.tsx`**
 
 Server component: `getSessionDetail(params.id)`; bila null `notFound()`; render judul + status + `<CountSheet ... />`.
 
-- [ ] **Step 7: Verifikasi manual**
+- [x] **Step 7: Verifikasi manual**
 
 Buat sesi → semua produk aktif masuk lembar hitung dengan stok sistem; isi sebagian (cicil) → autosave tersimpan (reload tidak hilang); preview selisih benar; terapkan → stok `/stok` berubah sesuai selisih, sesi jadi completed dengan total; produk tidak dihitung tidak berubah; coba buat sesi kedua saat masih aktif → error "Masih ada sesi opname aktif".
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```powershell
 git add .
@@ -1486,7 +1486,7 @@ git commit -m "feat: stock opname — sesi, hitung fisik autosave, selisih, dan 
 - Consumes: Task 2 (skema), Task 3 (`formatRupiah`), Task 6 (`listProductsGroupedByCategory`)
 - Produces: `stockCard(productId, from?, to?)`, `salesProfitByType(from?, to?)`
 
-- [ ] **Step 1: Query laporan `src/server/repositories/reports.ts`**
+- [x] **Step 1: Query laporan `src/server/repositories/reports.ts`**
 
 ```ts
 import { and, asc, eq, gte, lte, sql } from 'drizzle-orm';
@@ -1536,23 +1536,23 @@ export async function salesProfitByType(from?: Date, to?: Date) {
 
 Catatan: saldo berjalan benar karena setiap perubahan stok selalu menulis ledger, sehingga saldo dapat dihitung dari nol. Label tipe movement di UI: `in_production` = "Produksi sendiri", `in_purchase` = "Kulakan luar", `sale` = "Penjualan", `opname_adjust` = "Penyesuaian opname".
 
-- [ ] **Step 2: Laporan stok per babaran `laporan/page.tsx`**
+- [x] **Step 2: Laporan stok per babaran `laporan/page.tsx`**
 
 Server component: gunakan `listProductsGroupedByCategory()` (Task 6). Render Card per kategori: tabel produk (nama, qty, nilai = qty × priceModal), subtotal qty & nilai per kategori, grand total. Link ke `/laporan/kartu-stok` dan `/laporan/penjualan` di atas halaman.
 
-- [ ] **Step 3: Kartu stok `laporan/kartu-stok/page.tsx`**
+- [x] **Step 3: Kartu stok `laporan/kartu-stok/page.tsx`**
 
 Server component membaca `searchParams`: `productId`, `from`, `to` (yyyy-mm-dd). Render form GET: Select produk + dua input `type="date"`. Bila `productId` ada: panggil `stockCard(productId, parse(from), parse(to))` (konversi `to` menjadi akhir hari: `new Date(to + 'T23:59:59')`), render tabel kronologis: tanggal (`formatTanggal`), tipe kejadian (label di atas), masuk (+), keluar (−), saldo berjalan; kartu ringkasan: total masuk, total keluar, selisih.
 
-- [ ] **Step 4: Penjualan & laba `laporan/penjualan/page.tsx`**
+- [x] **Step 4: Penjualan & laba `laporan/penjualan/page.tsx`**
 
 Server component membaca `searchParams.from`/`to` (default: awal bulan berjalan s.d. hari ini). Render form GET rentang tanggal + hasil `salesProfitByType(from, to)`: tabel baris per tipe (Ecer/Grosir/Kulakan): jumlah transaksi, qty, omzet, HPP, laba (revenue − cost); baris total. Di bawahnya grafik batang harian sederhana: query tambahan `dailySales(from, to)` di `reports.ts` — `select date_trunc('day', sales.createdAt) as day, sum(totalPrice) group by 1 order by 1` — lalu render batang dengan `<div style={{ height: pct }}>` relatif terhadap nilai maksimum (tanpa library chart).
 
-- [ ] **Step 5: Verifikasi manual**
+- [x] **Step 5: Verifikasi manual**
 
 Dengan data hasil Task 7–9: laporan stok per babaran menampilkan total qty & nilai; kartu stok menampilkan mutasi + saldo berjalan yang ujungnya sama dengan stok di `/stok`; laporan penjualan menampilkan omzet/HPP/laba per tipe yang sesuai dengan transaksi yang dibuat.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add .
@@ -1571,7 +1571,7 @@ git commit -m "feat: laporan stok per babaran, kartu stok, dan penjualan & laba 
 - Consumes: Task 4 (`auth`), Task 6 (`listCategories`)
 - Produces: `addCategoryAction(raw)`, `renameCategoryAction(id, raw)`; PWA manifest + service worker
 
-- [ ] **Step 1: Actions kategori `src/actions/settings.ts`**
+- [x] **Step 1: Actions kategori `src/actions/settings.ts`**
 
 ```ts
 'use server';
@@ -1621,11 +1621,11 @@ export async function renameCategoryAction(id: string, raw: unknown): Promise<Ac
 }
 ```
 
-- [ ] **Step 2: Halaman `pengaturan/page.tsx`**
+- [x] **Step 2: Halaman `pengaturan/page.tsx`**
 
 Server component: daftar kategori (`listCategories()`) dengan tombol ubah nama (Dialog berisi input → `renameCategoryAction`), form tambah kategori (`addCategoryAction`), dan kartu Akun berisi email + role dari session (baca via `auth()`).
 
-- [ ] **Step 3: PWA — `src/app/manifest.ts`**
+- [x] **Step 3: PWA — `src/app/manifest.ts`**
 
 ```ts
 import type { MetadataRoute } from 'next';
@@ -1644,11 +1644,11 @@ export default function manifest(): MetadataRoute.Manifest {
 }
 ```
 
-- [ ] **Step 4: Ikon `public/icons/icon.svg`**
+- [x] **Step 4: Ikon `public/icons/icon.svg`**
 
 SVG 512×512 bertema batik: latar cokelat soga (`#7c2d12`), motif parang sederhana (garis diagonal berulang) warna krem, inisial "AP" putih di tengah. Buat dengan editor/ generator apa pun; yang penting valid SVG 512×512.
 
-- [ ] **Step 5: Service worker `public/sw.js` + registrasi**
+- [x] **Step 5: Service worker `public/sw.js` + registrasi**
 
 ```js
 const CACHE = 'aninda-payu-static-v1';
@@ -1700,11 +1700,11 @@ export function SwRegister() {
 
 Tambahkan `<SwRegister />` di dalam `(dashboard)/layout.tsx`.
 
-- [ ] **Step 6: Verifikasi manual**
+- [x] **Step 6: Verifikasi manual**
 
 Tambah & ubah nama kategori berfungsi. Buka Chrome DevTools → Application: manifest terdeteksi, tombol install muncul; service worker registered; aset `/_next/static` ter-cache; saat offline app shell tetap terbuka (data tetap butuh online — sesuai desain).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```powershell
 git add .
@@ -1722,7 +1722,7 @@ git commit -m "feat: pengaturan kategori & akun, PWA manifest + service worker"
 - Consumes: seluruh task sebelumnya
 - Produces: `npm run e2e` menjalankan alur kritikal; README berisi setup lokal & deploy
 
-- [ ] **Step 1: Instal browser Playwright & konfigurasi**
+- [x] **Step 1: Instal browser Playwright & konfigurasi**
 
 ```powershell
 npx playwright install chromium
@@ -1748,7 +1748,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 2: Tes alur kritikal `tests/e2e/critical-flow.spec.ts`**
+- [x] **Step 2: Tes alur kritikal `tests/e2e/critical-flow.spec.ts`**
 
 Prasyarat: `.env` terisi (DB, AUTH_SECRET) dan `npm run db:seed` sudah dijalankan. Kredensial dibaca dari env. Bila selector tidak cocok karena perbedaan implementasi form, sesuaikan dengan atribut `name` field yang didefinisikan di Task 5–9.
 
@@ -1815,7 +1815,7 @@ test('alur kritikal: login, produk, stok masuk, penjualan, opname', async ({ pag
 });
 ```
 
-- [ ] **Step 3: Jalankan E2E**
+- [x] **Step 3: Jalankan E2E**
 
 ```powershell
 npm run e2e
@@ -1823,11 +1823,11 @@ npm run e2e
 
 Expected: 1 test lulus. Bila gagal karena selector, perbaiki selector sesuai markup aktual (field form memakai atribut `name`).
 
-- [ ] **Step 4: Tulis `README.md`**
+- [x] **Step 4: Tulis `README.md`**
 
 Isi: deskripsi aplikasi; prasyarat (Node 20+, akun Neon, akun UploadThing); setup lokal (`npm i`, salin `.env.example` → `.env`, `npm run db:push`, `npm run db:seed`, `npm run dev`); script penting (`npm test`, `npm run e2e`, `npm run db:generate/migrate`); tautan ke `docs/design/SPEC.md` dan `docs/design/PLAN.md`.
 
-- [ ] **Step 5: Verifikasi akhir menyeluruh**
+- [x] **Step 5: Verifikasi akhir menyeluruh**
 
 ```powershell
 npm test
@@ -1837,7 +1837,7 @@ npm run e2e
 
 Expected: semua lulus.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add .

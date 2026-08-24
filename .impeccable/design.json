@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-22T00:00:00+07:00",
+  "title": "Design System: Aninda Payu",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Indigo Tinta", "canonical": "#24518E", "tonalRamp": ["#101F35", "#16294A", "#1B3560", "#24518E", "#3E6BA6", "#6C8FC0", "#A3BCD9", "#D3E0EE"] },
+      "primary-deep": { "role": "primary", "displayName": "Indigo Dalam", "canonical": "#24406B", "tonalRamp": ["#0E1A2C", "#142441", "#1A3157", "#24406B", "#3D5C8C", "#6780A9", "#9BAECB", "#D0DAE8"] },
+      "paper": { "role": "neutral", "displayName": "Kertas Tulang", "canonical": "#F4F1E9", "tonalRamp": ["#8A8577", "#A39E8F", "#BDB8AA", "#D8D2C4", "#E7E0D0", "#ECE7DA", "#F4F1E9", "#FAF8F0"] },
+      "ink": { "role": "neutral", "displayName": "Tinta", "canonical": "#1C2B36", "tonalRamp": ["#1C2B36", "#2C3B46", "#3D4C57", "#4E5D68", "#60707B", "#7A8893", "#9AA6B0", "#C2CAD1"] },
+      "ruling": { "role": "neutral", "displayName": "Garis Ruling", "canonical": "#B9CFDF", "tonalRamp": ["#24406B", "#35547E", "#4A6E97", "#6C8BAC", "#93AEC6", "#B9CFDF", "#D3E2EC", "#EAF2F7"] },
+      "soga": { "role": "secondary", "displayName": "Soga Batik", "canonical": "#9C4A1F", "tonalRamp": ["#3E1D0C", "#5C2B12", "#7C3917", "#9C4A1F", "#B4693D", "#CC8F66", "#E0B99A", "#F0DFCE"] },
+      "pencil-red": { "role": "tertiary", "displayName": "Pensil Merah", "canonical": "#B3372B", "tonalRamp": ["#4A1712", "#6E221B", "#932D24", "#B3372B", "#C65B4F", "#D98A80", "#EBBDB7", "#F5E1DE"] },
+      "pencil-green": { "role": "tertiary", "displayName": "Pensil Hijau", "canonical": "#2E6B4F", "tonalRamp": ["#122B20", "#1B4030", "#245540", "#2E6B4F", "#4A8468", "#71A18A", "#A2C4B3", "#D5E6DD"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Nama buku dan judul halaman; grotesque berdada lebar seperti huruf sampul buku tulis." },
+      "body": { "displayName": "Body", "purpose": "Teks umum, formulir, dan angka; sans netral rapi." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out-soft", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Transisi keadaan default (hover, enter dialog/toast)." },
+      { "name": "arrow-nudge", "value": "transform: translateX(4px); 150ms ease-out", "purpose": "Satu momen authored: panah indeks bergeser saat baris di-hover." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px", "purpose": "Sidebar indeks muncul; bottom nav disembunyikan." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Aksi utama bertinta indigo; persegi, tanpa bayangan.",
+      "html": "<button class=\"ds-btn-primary\">Simpan Penjualan</button>",
+      "css": ".ds-btn-primary { background: var(--primary); color: var(--background); border: 1px solid transparent; border-radius: 3px; height: 36px; padding: 0 14px; font: 500 14px/1 var(--font-body); cursor: pointer; transition: background 150ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-primary:hover { background: var(--indigo-deep); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Aksi sekunder: garis tinta tipis di atas kertas.",
+      "html": "<button class=\"ds-btn-outline\">Stok Masuk</button>",
+      "css": ".ds-btn-outline { background: transparent; color: var(--foreground); border: 1px solid color-mix(in srgb, var(--foreground) 30%, transparent); border-radius: 3px; height: 36px; padding: 0 14px; font: 500 14px/1 var(--font-body); cursor: pointer; transition: background 150ms; } .ds-btn-outline:hover { background: var(--muted); } .ds-btn-outline:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Koreksi buku: teks dan garis pensil merah, tanpa isi.",
+      "html": "<button class=\"ds-btn-destructive\">Batalkan Sesi</button>",
+      "css": ".ds-btn-destructive { background: transparent; color: var(--pencil); border: 1px solid color-mix(in srgb, var(--pencil) 50%, transparent); border-radius: 3px; height: 36px; padding: 0 14px; font: 500 14px/1 var(--font-body); cursor: pointer; transition: background 150ms; } .ds-btn-destructive:hover { background: color-mix(in srgb, var(--pencil) 10%, transparent); } .ds-btn-destructive:focus-visible { outline: 2px solid var(--pencil); outline-offset: 2px; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Medan isian kertas terang dengan garis input; caret soga.",
+      "html": "<input class=\"ds-input\" placeholder=\"Cari nama produk…\" />",
+      "css": ".ds-input { background: var(--card); color: var(--foreground); border: 1px solid var(--input); border-radius: 3px; height: 36px; padding: 0 10px; font: 400 14px/1 var(--font-body); caret-color: var(--soga); outline: none; transition: border-color 150ms; } .ds-input::placeholder { color: var(--muted-foreground); } .ds-input:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 40%, transparent); }"
+    },
+    {
+      "name": "Stamp Badge",
+      "kind": "chip",
+      "refersTo": "badge-stamp",
+      "description": "Cap koreksi persegi kecil; pensil merah untuk stok menipis.",
+      "html": "<span class=\"ds-stamp\">2 pcs</span>",
+      "css": ".ds-stamp { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border: 1px solid color-mix(in srgb, var(--pencil) 50%, transparent); border-radius: 2px; color: var(--pencil); font: 500 12px/1 var(--font-body); font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Bottom Nav",
+      "kind": "nav",
+      "description": "Kaki buku mobile: garis atas indigo 2px; aktif = indigo + goresan soga.",
+      "html": "<nav class=\"ds-bottomnav\"><a class=\"ds-nav-item is-active\">Stok<span class=\"ds-nav-stroke\"></span></a><a class=\"ds-nav-item\">Transaksi<span class=\"ds-nav-stroke\"></span></a><a class=\"ds-nav-item\">Opname<span class=\"ds-nav-stroke\"></span></a></nav>",
+      "css": ".ds-bottomnav { display: flex; border-top: 2px solid var(--indigo-deep); background: var(--background); } .ds-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0 6px; font: 400 11px/1 var(--font-body); color: var(--muted-foreground); text-decoration: none; } .ds-nav-item.is-active { color: var(--primary); font-weight: 600; } .ds-nav-stroke { width: 24px; height: 2px; background: transparent; } .ds-nav-item.is-active .ds-nav-stroke { background: var(--soga); }"
+    },
+    {
+      "name": "Ledger Table",
+      "kind": "custom",
+      "description": "Tabel buku: kepala bergaris ganda indigo, baris ruling biru, total bergaris ganda merah.",
+      "html": "<table class=\"ds-ledger\"><thead><tr><th>Stok berjalan</th><td>128 pcs</td></tr></thead><tbody><tr><td>Penjualan hari ini</td><td class=\"ds-total\">Rp 1.250.000</td></tr></tbody></table>",
+      "css": ".ds-ledger { width: 100%; border-collapse: collapse; font: 400 14px/1.4 var(--font-body); font-variant-numeric: tabular-nums; } .ds-ledger thead tr { border-bottom: 5px double var(--indigo-deep); } .ds-ledger th, .ds-ledger td { padding: 12px 4px; text-align: left; } .ds-ledger td { text-align: right; } .ds-ledger tbody tr { border-bottom: 1px solid var(--ruling); } .ds-ledger tr.ds-total, .ds-ledger .ds-total { border-bottom: 5px double var(--pencil); font-weight: 600; }"
+    },
+    {
+      "name": "Index Row",
+      "kind": "custom",
+      "description": "Baris indeks aksi: nama kiri, panah goresan tangan kanan yang bergeser saat hover.",
+      "html": "<a class=\"ds-index-row\">Catat Penjualan<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"square\"><path d=\"M4 12.4c4.9-.6 9.7-.6 14.6-.2\"/><path d=\"m15.2 8.9 4.5 3.3-4.8 3.2\"/></svg></a>",
+      "css": ".ds-index-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px; border-bottom: 1px solid var(--ruling); color: var(--foreground); font: 400 16px/1.2 var(--font-body); text-decoration: none; transition: background 150ms; } .ds-index-row:hover { background: color-mix(in srgb, var(--muted) 60%, transparent); } .ds-index-row svg { width: 20px; height: 20px; color: var(--muted-foreground); transition: transform 150ms cubic-bezier(0.22,1,0.36,1); } .ds-index-row:hover svg { transform: translateX(4px); color: var(--foreground); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Buku Kas — buku ledger kertas di meja toko batik",
+    "overview": "Aplikasi ini diperlakukan sebagai buku, bukan dashboard. Setiap layar adalah halaman buku: kertas tulang hangat, tinta biru-hitam, garis ruling biru pudar seperti buku tulis, dan pensil merah yang hanya muncul untuk selisih, stok menipis, dan total akhir. Ekspresi datang dari detail pembukuan — garis ganda di bawah judul, garis merah ganda di bawah total — bukan dari dekorasi. Kepadatan sedang, tenang, dan fungsional: pemilik membuka buku dengan satu tangan di toko, membaca angka hari ini, memilih aksi dari indeks, mencatat, lalu menutup buku. Tidak ada kartu metric, tidak ada gradasi, tidak ada bayangan: kedalaman dinyatakan dengan garis, bukan cahaya.",
+    "keyCharacteristics": [
+      "Kertas hangat (#F4F1E9) sebagai satu-satunya latar; tidak ada putih murni.",
+      "Garis ruling biru pudar (#B9CFDF) memisahkan baris seperti buku tulis.",
+      "Garis ganda indigo untuk kepala buku; garis ganda pensil merah untuk total.",
+      "Radius sudut ≤4px; border 1px; nol bayangan, nol gradien, nol glass.",
+      "Angka selalu tabular; pensil merah untuk negatif; soga untuk aksen aktif.",
+      "Ikon SVG authored bergoresan pena persegi; bukan pustaka ikon generik."
+    ],
+    "rules": [
+      { "name": "The Red Pencil Rule", "body": "Pensil merah hanya untuk angka yang butuh perhatian (negatif, menipis, total). Memakainya untuk dekorasi menghapus artinya.", "section": "colors" },
+      { "name": "The One Ink Rule", "body": "Satu indigo untuk semua aksi; soga hanya aksen garis, tidak pernah mengisi permukaan besar.", "section": "colors" },
+      { "name": "The Tabular Rule", "body": "Semua kolom angka memakai font-variant-numeric: tabular-nums; angka harus sejajar vertikal seperti ditulis di kolom buku.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Nol box-shadow di seluruh permukaan; jika sebuah elemen butuh \"terangkat\", beri border, bukan bayangan.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do tulis angka dengan tabular nums dan format Rp 150.000.",
+      "Do pakai garis ganda indigo untuk kepala buku dan garis ganda merah hanya untuk total.",
+      "Do tandai keadaan aktif dengan goresan soga, bukan isi warna.",
+      "Do tema semua permukaan browser: selection indigo, caret soga, scrollbar garis input, color-scheme: light.",
+      "Do jaga kontras teks ≥4.5:1 di atas kertas."
+    ],
+    "donts": [
+      "Don't pakai bayangan, gradien, glass, atau blur dekoratif — dunia ini datar dan bertinta.",
+      "Don't pakai putih murni atau abu-abu dingin; netral selalu bernuansa kertas hangat.",
+      "Don't pakai ikon pustaka generik atau emoji; ikon adalah SVG authored goresan pena.",
+      "Don't bulatkan sudut di atas 4px; pill hanya untuk kontrol kecil bila terpaksa.",
+      "Don't pakai pensil merah untuk dekorasi; ia milik selisih dan peringatan."
+    ]
+  }
+}

@@ -7,8 +7,18 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Aplikasi stock opname batik Aninda Payu',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#7c2d12',
-    icons: [{ src: '/icons/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
+    background_color: '#f4f1e9',
+    theme_color: '#24406b',
+    icons: [
+      { src: '/icons/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      {
+        src: '/icons/icon-maskable-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+    ],
   };
 }
