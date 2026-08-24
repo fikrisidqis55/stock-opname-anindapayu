@@ -1,5 +1,5 @@
-const CACHE = 'aninda-payu-static-v2';
-const STATIC = ['/icons/icon.svg', '/manifest.webmanifest'];
+const CACHE = 'aninda-payu-static-v3';
+const STATIC = ['/LogoAnindaPayu.png', '/icons/icon-192.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(STATIC)));

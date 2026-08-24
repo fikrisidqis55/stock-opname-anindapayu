@@ -39,7 +39,7 @@ Bahasa UI Indonesia dengan istilah domain: Stok, Transaksi, Opname, Laporan, Pen
 ## Evidence on Hand
 
 - `docs/design/SPEC.md` (spesifikasi disetujui), `docs/design/PLAN.md` (12 task selesai, terimplementasi & terverifikasi).
-- Tidak ada foto produk/aset brand riil selain `public/icons/icon.svg`. Jangan mengarang testimoni/pelanggan/klaim komersial.
+- Tidak ada foto produk/aset brand riil selain `public/LogoAnindaPayu.png` (emblem emas; sumber favicon/ikon PWA/logo header). Jangan mengarang testimoni/pelanggan/klaim komersial.
 
 ## Product Principles
 

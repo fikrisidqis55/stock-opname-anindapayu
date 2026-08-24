@@ -17,7 +17,7 @@ export default async function DashboardLayout({
       <AppTopBar />
       <div className="flex flex-1">
         <AppNav />
-        <main className="w-full flex-1 p-4 pb-20 md:pb-4">{children}</main>
+        <main className="w-full flex-1 p-4 pb-24 md:pb-4">{children}</main>
       </div>
       <Toaster position="top-center" />
       <SwRegister />

@@ -27,6 +27,8 @@ test('foto produk dikompres & tersimpan sebagai data-uri', async ({ page }) => {
 
   // 2. Pilih foto → preview data-URI muncul
   await page.goto('/stok/baru');
+  // Tunggu hidrasi selesai (loading.tsx streaming) agar handler file input aktif.
+  await page.waitForLoadState('networkidle');
   await page.setInputFiles('input[type=file]', {
     name: 'foto.png',
     mimeType: 'image/png',

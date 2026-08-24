@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ArrowLedgerIcon } from '@/components/ui/icons';
@@ -41,8 +42,15 @@ export function AppTopBar() {
       <Link
         href="/"
         aria-label="Ke beranda"
-        className="font-heading text-base font-bold hover:text-primary"
+        className="flex items-center gap-2 font-heading text-base font-bold hover:text-primary"
       >
+        <Image
+          src="/LogoAnindaPayu.png"
+          alt=""
+          width={28}
+          height={28}
+          className="size-7 rounded-full object-cover"
+        />
         Aninda Payu
       </Link>
     </header>
@@ -58,8 +66,15 @@ export function AppNav() {
         <Link
           href="/"
           aria-label="Ke beranda"
-          className="block font-heading text-xl font-bold hover:text-primary"
+          className="flex items-center gap-2.5 font-heading text-xl font-bold hover:text-primary"
         >
+          <Image
+            src="/LogoAnindaPayu.png"
+            alt=""
+            width={36}
+            height={36}
+            className="size-9 rounded-full object-cover"
+          />
           Aninda Payu
         </Link>
         <div className="rule-double mt-2 mb-5" aria-hidden />
@@ -98,7 +113,7 @@ export function AppNav() {
         </button>
       </aside>
       {/* Bottom nav mobile: kaki buku dengan garis tinta */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t-2 border-indigo-deep bg-background md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t-2 border-indigo-deep bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
         {MENU.map((m) => {
           const active = pathname.startsWith(m.href);
           return (
@@ -106,14 +121,14 @@ export function AppNav() {
               key={m.href}
               href={m.href}
               aria-current={active ? 'page' : undefined}
-              className={`flex flex-1 flex-col items-center gap-1 py-2 text-[0.7rem] ${
+              className={`flex flex-1 flex-col items-center justify-center gap-1.5 py-3 text-xs ${
                 active ? 'font-semibold text-primary' : 'text-muted-foreground'
               }`}
             >
               {m.label}
               <span
                 aria-hidden
-                className={`h-0.5 w-6 ${active ? 'bg-soga' : 'bg-transparent'}`}
+                className={`h-0.5 w-8 ${active ? 'bg-soga' : 'bg-transparent'}`}
               />
             </Link>
           );

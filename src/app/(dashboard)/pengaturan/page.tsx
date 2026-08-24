@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { CategoryManager } from '@/components/settings/category-manager';
+import { SignOutButton } from '@/components/settings/signout-button';
 import { auth } from '@/server/auth';
 import { listCategories } from '@/server/repositories/categories';
 
@@ -43,6 +44,7 @@ export default async function PengaturanPage() {
           <p>
             <span className="text-muted-foreground">Peran:</span> Owner
           </p>
+          <SignOutButton />
         </CardContent>
       </Card>
     </div>

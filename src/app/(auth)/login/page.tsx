@@ -1,6 +1,7 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -35,7 +36,15 @@ export default function LoginPage() {
         className="w-full max-w-sm border border-border bg-card p-6"
       >
         <header className="text-center">
-          <h1 className="border-b-0 pb-0 font-heading text-2xl font-bold">Aninda Payu</h1>
+          <Image
+            src="/LogoAnindaPayu.png"
+            alt="Logo Aninda Payu"
+            width={72}
+            height={72}
+            priority
+            className="mx-auto size-16 rounded-full object-cover"
+          />
+          <h1 className="mt-3 border-b-0 pb-0 font-heading text-2xl font-bold">Aninda Payu</h1>
           <div className="rule-double mt-2" aria-hidden />
           <p className="mt-3 text-sm text-muted-foreground">
             Masuk untuk mengelola stok batik

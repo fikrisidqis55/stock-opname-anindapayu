@@ -15,6 +15,7 @@ const body = Public_Sans({
 export const metadata: Metadata = {
   title: { default: 'Aninda Payu', template: '%s · Aninda Payu' },
   description: 'Aplikasi stock opname batik Aninda Payu',
+  icons: { icon: '/icons/icon-192.png', apple: '/icons/icon-512.png' },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

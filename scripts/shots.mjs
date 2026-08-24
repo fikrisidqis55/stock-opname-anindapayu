@@ -6,6 +6,18 @@ const BASE = process.env.SHOT_BASE ?? 'http://localhost:3000';
 const OUT = '.impeccable/shots';
 mkdirSync(OUT, { recursive: true });
 
+// Cermin dari src/lib/domain.ts#passwordHarian (skrip ini plain ESM).
+function passwordHarian() {
+  const parts = new Intl.DateTimeFormat('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    day: '2-digit',
+    month: '2-digit',
+  }).formatToParts(new Date());
+  const dd = parts.find((p) => p.type === 'day').value;
+  const mm = parts.find((p) => p.type === 'month').value;
+  return `Aninda${dd}${mm}!`;
+}
+
 const ROUTES = [
   ['/', 'home'],
   ['/stok', 'stok'],
@@ -41,12 +53,16 @@ async function getProductId(page) {
 }
 
 async function login(browser, viewport) {
+  // Rotasi hash DB lewat endpoint cron (meniru panggilan Vercel), lalu login.
+  await fetch(`${BASE}/api/cron/rotasi-password`, {
+    headers: { authorization: `Bearer ${process.env.CRON_SECRET ?? ''}` },
+  });
   const ctx = await browser.newContext({ viewport });
   const page = await ctx.newPage();
   await page.goto(`${BASE}/login`);
   await page.screenshot({ path: `${OUT}/login.png`, fullPage: true });
   await page.fill('input[name=email]', process.env.OWNER_EMAIL ?? '');
-  await page.fill('input[name=password]', process.env.OWNER_PASSWORD ?? '');
+  await page.fill('input[name=password]', passwordHarian());
   await page.click('button[type=submit]');
   await page.waitForURL(`${BASE}/`);
   return { ctx, page };
