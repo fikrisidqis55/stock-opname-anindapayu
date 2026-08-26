@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.*
+# project ini npm — yarn.lock liar membuat Vercel switch ke yarn dan build gagal
+yarn.lock
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
