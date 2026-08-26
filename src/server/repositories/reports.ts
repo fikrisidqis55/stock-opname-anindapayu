@@ -72,7 +72,8 @@ export async function salesProfitByType(from?: Date, to?: Date) {
 }
 
 export async function dailySales(from?: Date, to?: Date) {
-  const day = sql<string>`date_trunc('day', ${sales.createdAt})`;
+  // Hari kalender WIB agar sesuai hari versi toko (sama seperti homeSummary).
+  const day = sql<string>`date_trunc('day', ${sales.createdAt} at time zone 'Asia/Jakarta')`;
   return db
     .select({
       day,

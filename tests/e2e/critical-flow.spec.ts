@@ -69,11 +69,31 @@ test('alur kritikal: login, produk, stok masuk, penjualan, opname', async ({ pag
   await page.goto(`/stok?q=${encodeURIComponent(sku)}`);
   await expect(page.locator('tr', { hasText: sku }).getByText('4', { exact: true })).toBeVisible();
 
-  // 7. Bersihkan data uji
+  // 6b. Export CSV laporan tersedia saat login (text/csv + header)
   const [p] = await db
     .select({ id: products.id })
     .from(products)
     .where(eq(products.name, sku));
+  const ymd = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+      d.getDate(),
+    ).padStart(2, '0')}`;
+  const now = new Date();
+  const csvSale = await page.request.get(
+    `/laporan/penjualan/export?from=${ymd(
+      new Date(now.getFullYear(), now.getMonth(), 1),
+    )}&to=${ymd(now)}`,
+  );
+  expect(csvSale.ok()).toBeTruthy();
+  expect(csvSale.headers()['content-type']).toContain('text/csv');
+  expect(await csvSale.text()).toContain('Tanggal;');
+  const csvKartu = await page.request.get(
+    `/laporan/kartu-stok/export?productId=${p?.id ?? ''}`,
+  );
+  expect(csvKartu.ok()).toBeTruthy();
+  expect(await csvKartu.text()).toContain('Masuk;');
+
+  // 7. Bersihkan data uji
   if (p) {
     const saleRows = await db
       .select({ saleId: saleItems.saleId })

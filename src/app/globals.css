@@ -221,3 +221,21 @@
     color: var(--soga);
   }
 }
+
+/* Cetak: laporan menjadi halaman buku kas di atas kertas putih */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  tr {
+    break-inside: avoid;
+  }
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+}

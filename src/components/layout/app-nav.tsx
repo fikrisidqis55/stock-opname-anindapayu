@@ -26,7 +26,7 @@ export function AppTopBar() {
   const router = useRouter();
   const deep = !TOP_LEVEL.includes(pathname);
   return (
-    <header className="sticky top-0 z-40 flex items-center gap-1.5 border-b border-border bg-background px-3 py-2 md:hidden">
+    <header className="sticky top-0 z-40 flex items-center gap-1.5 border-b border-border bg-background px-3 py-2 md:hidden print:hidden">
       {deep && (
         <button
           type="button"
@@ -62,7 +62,7 @@ export function AppNav() {
   return (
     <>
       {/* Sidebar desktop: indeks buku */}
-      <aside className="hidden w-56 shrink-0 border-r border-border p-5 md:block">
+      <aside className="hidden w-56 shrink-0 border-r border-border p-5 md:block print:hidden">
         <Link
           href="/"
           aria-label="Ke beranda"
@@ -113,7 +113,7 @@ export function AppNav() {
         </button>
       </aside>
       {/* Bottom nav mobile: kaki buku dengan garis tinta */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t-2 border-indigo-deep bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t-2 border-indigo-deep bg-background pb-[env(safe-area-inset-bottom)] md:hidden print:hidden">
         {MENU.map((m) => {
           const active = pathname.startsWith(m.href);
           return (

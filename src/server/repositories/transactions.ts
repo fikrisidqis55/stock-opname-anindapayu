@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm';
+import { and, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm';
 import { db } from '@/server/db';
 import { products, saleItems, sales, stockBatches } from '@/server/db/schema';
 
@@ -115,4 +115,20 @@ export function listSalesInRange(from: Date, to: Date) {
     .from(sales)
     .where(and(gte(sales.createdAt, from), lte(sales.createdAt, to)))
     .orderBy(desc(sales.createdAt));
+}
+
+/** Penjualan dalam rentang + qty total per transaksi (untuk export CSV). */
+export async function listSalesWithQtyInRange(from: Date, to: Date) {
+  const rows = await listSalesInRange(from, to);
+  if (rows.length === 0) return [];
+  const qtyRows = await db
+    .select({
+      saleId: saleItems.saleId,
+      qty: sql<number>`coalesce(sum(${saleItems.qty}), 0)::int`,
+    })
+    .from(saleItems)
+    .where(inArray(saleItems.saleId, rows.map((r) => r.id)))
+    .groupBy(saleItems.saleId);
+  const qtyBySale = new Map(qtyRows.map((q) => [q.saleId, Number(q.qty)]));
+  return rows.map((r) => ({ ...r, totalQty: qtyBySale.get(r.id) ?? 0 }));
 }

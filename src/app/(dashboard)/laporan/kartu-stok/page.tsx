@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { PrintButton } from '@/components/ui/print-button';
 import {
   Card,
   CardContent,
@@ -55,7 +57,7 @@ export default async function KartuStokPage({
 
       <form
         method="get"
-        className="flex max-w-2xl flex-wrap items-end gap-3"
+        className="flex max-w-2xl flex-wrap items-end gap-3 print:hidden"
       >
         <label className="w-full space-y-1 text-sm sm:w-64">
           Produk
@@ -87,6 +89,28 @@ export default async function KartuStokPage({
 
       {card && selected && (
         <>
+          <div className="hidden print:block">
+            <p className="text-sm font-semibold">
+              Aninda Payu — Kartu Stok {selected.name}
+            </p>
+            <p className="text-sm">Dicetak {formatTanggal(new Date())}</p>
+          </div>
+
+          <div className="flex gap-2 print:hidden">
+            <PrintButton />
+            <Button
+              variant="outline"
+              size="sm"
+              render={
+                <Link
+                  href={`/laporan/kartu-stok/export?productId=${productId}&from=${from ?? ''}&to=${to ?? ''}`}
+                />
+              }
+            >
+              Unduh CSV
+            </Button>
+          </div>
+
           <div className="grid gap-3 sm:grid-cols-3">
             <Card>
               <CardHeader>
@@ -122,7 +146,7 @@ export default async function KartuStokPage({
                     <span className="hidden sm:inline">Keluar</span>
                   </TableHead>
                   <TableHead className="hidden sm:table-cell">Saldo</TableHead>
-                  <TableHead className="sticky right-0 border-l border-border bg-background">
+                  <TableHead className="sticky right-0 border-l border-border bg-background print:hidden">
                     <span className="sr-only">Aksi</span>
                   </TableHead>
                 </TableRow>
@@ -158,7 +182,7 @@ export default async function KartuStokPage({
                       </span>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">{m.balance}</TableCell>
-                    <TableCell className="sticky right-0 border-l border-border bg-background group-hover:bg-muted">
+                    <TableCell className="sticky right-0 border-l border-border bg-background group-hover:bg-muted print:hidden">
                       <RowDetailDialog
                         title={TYPE_LABEL[m.type] ?? m.type}
                         description={formatWaktu(m.occurredAt)}
